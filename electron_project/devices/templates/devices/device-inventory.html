@@ -1,0 +1,29 @@
+{% extends 'devices/device-base.html' %}
+{% load static %}
+
+{% block Title %}مخزن الأجهزة{% endblock %}
+
+{% block js %}
+    <script src="{% static 'devices/js/device-inventory.js' %}"></script>
+{% endblock %}
+
+{% block table_id %}device-inventory-table{% endblock %}
+
+{% block rows %}
+    {% for device in inventory_devices %}
+    <tr data-serial="{{ device.serial_number }}" data-receipt-pk="{{ device.reception_receipt.pk }}">
+        <td></td>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ device.serial_number }}</td>
+        <td data-company="{{ device.reception_receipt.company_name }}">{{ device.reception_receipt.company_name }}</td>
+        <td data-type="{{ device.device_type }}" data-pk="{{ device.pk }}">{{ device.device_type }}</td>
+        <td>{{ device.entrance_date|date:'d/m/Y' }}</td>
+        <td><img class="icon" src="{{ device.returned_icon }}"></td>
+        <td><a href="#" class="device-detail-button" data-device-id="{{ device.pk }}" data-device-serial="{{ device.serial_number }}">ذهاب</a></td>
+    </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block extra_headers %}
+    <th>مرتجع</th>
+{% endblock %}

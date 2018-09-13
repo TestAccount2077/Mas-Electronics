@@ -1,0 +1,16 @@
+.main-wrapper {
+    display: none !important;
+}
+
+#print-area {
+    display: block !important;
+}
+
+#print-table, #todays-closing-table, #expense-archive-closing-table {
+    width: 90%;
+    margin-left: 5%;
+}
+
+body {
+    background-color: whitesmoke !important;
+}

@@ -1,0 +1,31 @@
+{% extends 'attendance/attendance-base.html' %}
+{% load static %}
+
+{% block Title %}حضور اليوم{% endblock %}
+
+{% block table_id %}daily-attendance-table{% endblock %}
+
+{% block rows %}
+
+    {% for attendance in attendances %}
+    <tr data-pk="{{ attendance.pk }}">
+        <td class="editable-locked" data-field-name="name" data-input-type="text">{{ attendance.name }}</td>
+        <td class="editable-locked" data-field-name="attendance_time" data-input-type="text">{{ attendance.formatted_attendance_time }}</td>
+        <td class="editable-locked" data-field-name="leave_time" data-input-type="text">{{ attendance.formatted_leave_time }}</td>
+        <td class="editable-locked" data-field-name="notes" data-input-type="text">{{ attendance.notes }}</td>
+        <td><img src="{% static 'images/remove.png' %}" class="icon remove-attendance-item" data-pk="{{ attendance.pk }}"></td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td class="editable-locked empty" data-field-name="name" data-input-type="text" style="height:38px"></td>
+        <td class="editable-locked empty attendance-td" data-field-name="attendance_time" data-input-type="text"><input  class="attendance-input" autocomplete="false"></td>
+        <td class="editable-locked empty attendance-td" data-field-name="leave_time" data-input-type="text"></td>
+        <td class="editable-locked empty" data-field-name="notes" data-input-type="text"></td>
+        <td></td>
+    </tr>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'attendance/js/daily-attendance.js' %}"></script>
+{% endblock %}

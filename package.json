@@ -1,0 +1,19 @@
+{
+    "name": "MasElectronics",
+    "version": "0.1.0",
+    "main": "main.js",
+    "author": "HunterXHunter",
+    "scripts": {
+        "package-win": "electron-packager . \"Mas Electronics\" --overwrite --asar --platform=win32 --arch=ia32 --icon=edit.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Mas Electronics\"",
+        "build-msi": "node installers/windows/createinstaller.js",
+        "startapp": "node_modules/.bin/electron ."
+    },
+    "devDependencies": {
+        "electron": "^1.8.2"
+    },
+    "dependencies": {
+        "dialogs": "^1.1.20",
+        "electron-packager": "^12.1.1",
+        "electron-reload": "^1.2.5"
+    }
+}

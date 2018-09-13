@@ -1,0 +1,77 @@
+{% extends 'expenses/expenses-base.html' %}
+{% load static %}
+
+{% block Title %}مصاريف اليوم{% endblock %}
+
+{% block table_id %}daily-expenses-table{% endblock %}
+{% block table_attrs %}data-item-type='expense'{% endblock %}
+
+{% block extra_headers %}<th>حذف</th>{% endblock %}
+
+{% block rows %}
+
+    {% for expense in expenses %}
+    <tr data-pk="{{ expense.pk }}">
+        {% if expense.balance_change < 0 %}
+        <td class="editable-locked expense-td" data-field-name="formatted_balance_change" data-input-type="number" data-sign="-">{{ expense.formatted_balance_change }}</td>
+        <td class="editable-locked revenue-td" data-field-name="formatted_balance_change" data-input-type="number" data-sign="+"></td>
+        
+        {% else %}
+        <td class="editable-locked expense-td" data-field-name="formatted_balance_change" data-input-type="number" data-sign="-"></td>
+        <td class="editable-locked revenue-td" data-field-name="formatted_balance_change" data-input-type="number" data-sign="+">{{ expense.formatted_balance_change }}</td>
+        {% endif %}
+        
+        <td class="editable-locked" data-field-name="description" data-input-type="text">{{ expense.description }}</td>
+        <td dir="ltr">{{ expense.created|date:"d/m/Y h:i A" }}</td>
+        <td class="editable-locked" data-field-name="total_after_change" data-input-type="number">{{ expense.total_after_change }}</td>
+        <td><img src="{% static 'images/remove.png' %}" class="icon remove-expense-item" data-pk="{{ expense.pk }}"></td>
+        
+    </tr>
+    {% endfor %}
+    
+    <tr>
+        <td class="editable-locked empty expense-td" data-field-name="formatted_balance_change" data-sign="-" data-input-type="text" style="height:38px" contenteditable="true"></td>
+        <td class="editable-locked empty revenue-td" data-field-name="formatted_balance_change" data-sign="+" data-input-type="text" contenteditable="true"></td>
+        <td class="editable-locked empty" data-field-name="description" data-input-type="text" contenteditable="true"></td>
+        <td data-field-name="created" dir="ltr"></td>
+        <td class="editable-locked empty" data-field-name="total_after_change"></td>
+        <td></td>
+    </tr>
+    
+{% endblock %}
+
+{% block extra %}
+<table id="todays-closing-table" class="table table-bordered" dir="rtl" style="{% if not daily_expense.closed %}display:none{% endif %}">
+    
+    <thead style="text-align:center">
+        <tr>
+            <th>اجمالى السحب</th>
+            <th>اجمالى الاضافة</th>
+            <th>الوقت</th>
+            <th>الاجمالى</th>
+        </tr>
+    </thead>
+    
+    
+    <tbody>
+        <tr>
+            {% if daily_expense.closed %}
+            <td id="todays-total-expenses" class="expense-td">{{ daily_expense.total_expenses }}</td>
+            <td id="todays-total-revenue" class="revenue-td">{{ daily_expense.total_revenue }}</td>
+            <td id="todays-closing-time">{{ daily_expense.closing_time }}</td>
+            <td id="todays-closing-total">{{ daily_expense.closing_balance }}</td>
+            {% else %}
+            <td id="todays-total-expenses"></td>
+            <td id="todays-total-revenue"></td>
+            <td id="todays-closing-time"></td>
+            <td id="todays-closing-total"></td>
+            {% endif %}
+        </tr>
+    </tbody>
+    
+</table>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'expenses/js/daily-expenses.js' %}"></script>
+{% endblock %}

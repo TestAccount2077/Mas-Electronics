@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}أرشيف المصاريف{% endblock %}
+
+{% block body %}
+<table id="expense-archive-table" class="table table-bordered" dir="rtl">
+    
+    <thead style="text-align:center">
+        <tr>
+            <th>التاريخ</th>
+            <th>العهدة أول اليوم</th>
+            <th>العهدة اخر اليوم</th>
+            <th>التفاصيل</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for expense in daily_expenses %}
+        <tr data-pk="{{ expense.pk }}">
+            <td>{{ expense.date|date:"d/m/Y" }}</td>
+            <td>{{ expense.opening_balance }}</td>
+            <td>{{ expense.closing_balance }}</td>
+            <td><a href="{% url 'expenses:expense_archive_detail' expense.pk %}" class="expense-archive-detail-link">ذهاب</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    
+</table>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $('#expenses-submenu')
+        .show()
+        .children().children(':last').addClass('active');
+</script>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'receipts/receipt.html' %}
+{% load static %}
+
+{% block Title %}فاتورة تسليم جديدة{% endblock %}
+
+{% block table_name %}new-delivery-receipt-table{% endblock %}
+{% block table_name_attr %}new-delivery-receipt-table{% endblock %}
+
+{% block upper_section %}
+    <input id="new-delivery-receipt-company" type="text" class="form-control" placeholder="اسم الشركة" dir="rtl" style="margin: 30px auto;width:50%; display:inline-block">
+    <input id="new-delivery-receipt-date" type="text" class="form-control" placeholder="التاريخ" dir="rtl" style="width:49%; display:inline-block">
+{% endblock %}
+
+{% block labels %}
+    <h3 style="text-align:center;direction:rtl"><strong>اذن تسليم</strong></h3>
+    <h3 style="text-align:center;direction:rtl"><strong>رقم: <span id="new-delivery-id-label">{{ current_delivery_id }}</span></strong></h3>
+{% endblock %}
+
+{% block table %}
+
+<div class="table-container"> 
+    <table class="table table-bordered receipt-table new-delivery-receipt-table" dir="rtl" data-table-name="new-delivery-receipt-table">
+    
+        <thead style="text-align:center">
+            <tr>
+                <th>م</th>
+                <th>العدد</th>
+                <th>النوع</th>
+                <th>الرقم</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for x in 'xxxxxxxxxxxxxxx' %}
+            <tr data-row='{{ forloop.counter }}'>
+                <td style="height: 37px" data-num='0'></td>
+                <td class="new-delivery-cell editable" data-num='1'></td>
+                <td class="new-delivery-cell editable" data-num='2'></td>
+                <td data-num='3' style="width:550px; text-align:right"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+
+{% endblock %}
+
+{% block lower_section %}
+    
+    <input id="new-delivery-receipt-outer-repr" type="text" class="form-control" placeholder="اسم المندوب" dir="rtl" style="display: inline;width: 40%;float: right;margin-right: 7%;">
+    
+    <input id="new-delivery-receipt-inner-repr" type="text" class="form-control" placeholder="مندوب مركز الخدمة" dir="rtl" style="display: inline;width: 40%;float: right;margin-right: 5%;">
+    
+{% endblock %}
+
+{% block button %}
+    
+    <div class="row btn-container">
+        <button dir="rtl" class="btn btn-success btn-lg receipt-save" id="new-delivery-receipt-save" data-prefix='new-delivery-receipt'>حفظ وطباعة</button>
+    </div>
+    
+{% endblock %}
+
+{% block extra_js %}
+    
+    <script type="text/javascript">
+        
+        var newDeliveryReceiptSerials = {{ new_delivery_receipt_serials|safe }},
+            newDeliveryReceiptCompanies = {{ new_delivery_receipt_companies|safe }},
+            newDeliveryReceiptTypes = {{ new_delivery_receipt_types|safe }},
+            innerReprs = {{ inner_reprs|safe }},
+            outerReprs = {{ outer_reprs|safe }},
+            currentDeliveryId = {{ current_delivery_id }};
+        
+        var rowData = JSON.parse({{ data.data|safe|default:"'{}'" }}),
+            company = '{{ company }}',
+            receiptType = 'delivery';
+        
+    </script>
+    
+{% endblock %}
+
+{% block js %}
+    
+    <script src="{% static 'receipts/js/receipts.js' %}"></script>
+    <script src="{% static 'receipts/js/new-delivery-receipt.js' %}"></script>
+    
+{% endblock %}

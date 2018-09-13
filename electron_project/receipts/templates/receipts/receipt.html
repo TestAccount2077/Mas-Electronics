@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}{% block Title %}{% endblock %}{% endblock %}
+
+
+{% block body %}
+<div class="receipt-view-header">
+    
+    <div class="row">
+        {% block labels %}{% endblock %}
+    </div>
+    
+    <div class="row receipt-upper-inputs-section">
+        <div class="col-md-12">
+            {% block upper_section %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<div id='serial-edit-modal' class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title people-modal-title">تعديل رقم تسلسلى</h5>
+                </div>
+                <div class="modal-body">
+                    <h2 style="text-align:center">هل تريد تعديل الرقم أم حذفه؟</h2>
+                </div>
+                <div class="modal-footer" style="background-color:#F3F6F8;border-radius:6px">
+                    <br>
+                    <button type="button" class="btn btn-danger" id="serial-delete-btn">حذف</button>
+                    <button id='serial-edit-btn' type="button" class="btn btn-success">تعديل</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% block table %}{% endblock %}
+
+<div class="row reprs-container" style="margin-top: 30px">
+    {% block lower_section %}{% endblock %}
+</div>
+
+{% block button %}{% endblock %}
+
+{% block extra_js %}{% endblock %}
+
+{% endblock %}

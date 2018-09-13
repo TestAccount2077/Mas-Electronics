@@ -1,0 +1,37 @@
+{% extends 'receipts/receipt-archive-base.html' %}
+
+{% block Title %}أرشيف فواتير التسليم{% endblock %}
+
+{% block table_name %}delivery-archive-table{% endblock %}
+    
+
+{% block rows %}
+
+    {% for receipt in delivery_receipts %}
+        <tr data-row='{{ forloop.counter }}' data-pk="{{ receipt.pk }}">
+            <td>{{ receipt.id }}</td>
+            <td data-company="{{ receipt.company_name }}">{{ receipt.company_name }}</td>
+            <td>{{ receipt.formatted_date }}</td>
+            <td>{{ receipt.outer_representative }}</td>
+            <td>{{ receipt.inner_representative }}</td>
+            <td>
+                <a href="{{ receipt.pk }}" class="receipt-link" data-type="delivery" data-pk="{{ receipt.pk }}">ذهاب</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}
+
+{% block js %}
+    
+    <script type="text/javascript">
+        
+        $('#archive-submenu')
+            .show()
+            .children().children(':nth-child(3)').addClass('active');
+        
+        var currentView = 'delivery-receipt-archive';
+        
+    </script>
+    
+{% endblock %}

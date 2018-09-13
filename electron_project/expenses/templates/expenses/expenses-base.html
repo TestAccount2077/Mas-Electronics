@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}{% block Title %}{% endblock %}{% endblock %}
+
+{% block body %}
+<table id="{% block table_id %}{% endblock %}" class="table table-bordered" dir="rtl" {% block table_attrs %}{% endblock %}>
+    
+    <thead style="text-align:center">
+        <tr>
+            <th>سحب</th>
+            <th>اضافة</th>
+            <th>البيان</th>
+            <th>الوقت</th>
+            <th>الاجمالى</th>
+            {% block extra_headers %}{% endblock %}
+            
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% block rows %}
+        {% endblock %}
+    </tbody>
+    
+</table>
+
+{% block extra %}
+{% endblock %}
+{% endblock %}

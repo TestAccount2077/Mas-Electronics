@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}تفاصيل القطعة {% endblock %}
+
+{% block body %}
+<table id="sparepart-inventory-detail-table" class="table table-bordered" dir="rtl">
+    
+    <thead style="text-align:center">
+        <tr>
+            <th>رقم اللوحة</th>
+            <th class="sortable" data-criteria='company'><span class='sort-carat'>&#9660;</span>اسم الشركة</th>
+            <th class="sortable" data-criteria='type'><span class='sort-carat'>&#9660;</span>نوع الجهاز</th>
+            <th class="sortable" data-criteria='date'><span class='sort-carat'>&#9660;</span>التاريخ</th>
+            <th>مسئول الصيانة</th>
+            <th>مظاهر العيب</th>
+            <th>ما تم تغييره</th>
+            <th>العدد</th>
+            <th>ملاحظات</th>
+            <th>التفاصيل</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for device in devices %}
+        <tr data-pk="{{ device.pk }}" data-serial="{{ device.serial_number }}" data-receipt-pk="{{ device.reception_receipt_id }}">
+            <td data-input-type="text" data-field-name="serial_number">{{ device.serial_number }}</td>
+            <td data-input-type="text" data-field-name="company_name" data-company="{{ device.company_name }}">{{ device.company_name }}</td>
+            <td data-input-type="text" data-field-name="device_type" data-type="{{ device.device_type }}" data-pk="{{ device.pk }}">{{ device.device_type }}</td>
+            <td data-input-type="date" data-field-name="entrance_date">{{ device.entrance_date }}</td>
+            <td class="{{ device.assignee_class }}" data-input-type="text" data-field-name="assignee">{{ device.assignee }}</td>
+            <td class="{{ device.flaws_class }}" data-input-type="text" data-field-name="flaws">{{ device.flaws }}</td>
+            <td class="{{ device.sparepart_name_class }}" data-input-type="text" data-field-name="sparepart_name" data-value="{{ device.sparepart_name }}">{{ device.sparepart_name }}</td>
+            <td class="{{ device.sparepart_count_class }}" data-input-type="number" data-field-name="sparepart_count" data-value="{{ device.sparepart_count }}">{{ device.sparepart_count }}</td>
+            <td class="{{ device.notes_class }} {% if device.notes_class == 'editable-locked' %}truncate{% endif %}" data-input-type="text" data-field-name="notes">{{ device.notes }}</td>
+            <td><a href="{% url 'devices:device-detail' device.serial_number %}" class="device-detail-button" data-device-id="{{ device.pk }}" data-device-serial="{{ device.serial_number }}">ذهاب</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    
+</table>
+{% endblock %}

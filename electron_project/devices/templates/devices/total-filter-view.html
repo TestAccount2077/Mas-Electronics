@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الفلترة الشاملة{% endblock %}
+
+{% block body %}
+
+    <table id="total-filter-table" class="table table-bordered" dir="rtl">
+
+        <thead style="text-align:center">
+            <tr>
+                <th></th>
+                <th>م</th>
+                <th>رقم اللوحة</th>
+                <th>اسم الشركة</th>
+                <th>نوع الجهاز</th>
+                <th>المكان</th>
+                <th>التاريخ</th>
+                <th>التفاصيل</th>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+
+    </table>
+
+{% endblock %}
+
+{% block js %}
+
+    <script type="text/javascript">
+        
+        var currentView = 'total-filter';
+
+        $('#total-filter-modal').modal({backdrop: 'static', keyboard: false});
+        $('#total-filter-modal').modal('show');
+        $('#total-filter-btn').show();
+        
+        $("#total-filter-serial").autocomplete({
+            source: {{ serials|safe }}
+        });
+
+        $("#total-filter-company").autocomplete({
+            source: {{ companies|safe }}
+        });
+
+        $("#total-filter-type").autocomplete({
+            source: {{ types|safe }}
+        });
+
+    </script>
+
+{% endblock %}

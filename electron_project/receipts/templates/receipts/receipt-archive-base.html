@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}{% block Title %}{% endblock %}{% endblock %}
+
+{% block body %}
+<div class="table-container">
+    <table class="table table-bordered {% block table_name %}{% endblock %}" dir="rtl">
+    
+        <thead style="text-align:center">
+            <tr>
+                <th>الرقم</th>
+                <th>الشركة</th>
+                <th>التاريخ</th>
+                <th>اسم المندوب</th>
+                <th>مندوب مركز الصيانة</th>
+                <th>التفاصيل</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% block rows %}{% endblock %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+

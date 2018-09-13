@@ -1,0 +1,85 @@
+{% extends 'receipts/receipt.html' %}
+{% load static %}
+
+{% block Title %}فاتورة استلام جديدة{% endblock %}
+
+{% block table_name %}{% endblock %}
+{% block table_name_attr %}new-reception-receipt-table{% endblock %}
+
+{% block upper_section %}
+    <input id="new-reception-receipt-company" type="text" class="form-control" placeholder="اسم الشركة" dir="rtl" style="margin: 30px auto; width:50%; display:inline-block">
+    <input id="new-reception-receipt-date" type="text" class="form-control" placeholder="التاريخ" dir="rtl" style="width:49%; display:inline-block">
+{% endblock %}
+
+{% block labels %}
+    <h3 style="text-align:center;direction:rtl"><strong>اذن استلام</strong></h3>
+    <h3 style="text-align:center;direction:rtl"><strong>رقم: <span id="new-reception-id-label">{{ current_reception_id }}</span></strong></h3>
+{% endblock %}
+
+{% block table %}
+
+<div class="table-container"> 
+    <table class="table table-bordered receipt-table new-reception-receipt-table" dir="rtl" data-table-name="new-reception-receipt-table">
+    
+        <thead style="text-align:center">
+            <tr>
+                <th>م</th>
+                <th>العدد</th>
+                <th>النوع</th>
+                <th>الرقم</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for x in 'xxxxxxxxxxxxxxx' %}
+            <tr data-row='{{ forloop.counter }}'>
+                <td style="height: 37px" data-num='0'></td>
+                <td class="new-reception-cell editable" data-num='1'></td>
+                <td class="new-reception-cell editable" data-num='2'></td>
+                <td data-num='3' style="width:550px; text-align:right"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+
+{% endblock %}
+
+{% block lower_section %}
+
+<input id="new-reception-receipt-outer-repr" type="text" class="form-control" placeholder="اسم المندوب" dir="rtl" style="display: inline;width: 40%;float: right;margin-right: 7%;">
+
+<input id="new-reception-receipt-inner-repr" type="text" class="form-control" placeholder="مندوب مركز الخدمة" dir="rtl" style="display: inline;width: 40%;float: right;margin-right: 5%;">
+
+{% endblock %}
+
+{% block button %}
+<div class="row btn-container">
+    <button dir="rtl" class="btn btn-success btn-lg receipt-save" id="new-reception-receipt-save" data-prefix='new-reception-receipt'>حفظ وطباعة</button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+
+    <script type="text/javascript">
+
+        var newReceptionReceiptSerials = {{ new_reception_receipt_serials|safe }},
+            newReceptionReceiptCompanies = {{ new_reception_receipt_companies|safe }},
+            newReceptionReceiptTypes = {{ new_reception_receipt_types|safe }},
+            innerReprs = {{ inner_reprs|safe }},
+            outerReprs = {{ outer_reprs|safe }},
+            currentReceptionId = {{ current_reception_id }};
+
+        var rowData = JSON.parse({{ data.data|safe|default:"'{}'" }}),
+            company = '{{ company }}',
+            receiptType = 'reception';
+
+    </script>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'receipts/js/receipts.js' %}"></script>
+    <script src="{% static 'receipts/js/new-reception-receipt.js' %}"></script>
+{% endblock %}

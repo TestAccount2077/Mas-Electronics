@@ -1,0 +1,181 @@
+body {
+    overflow: hidden;
+    font-family: 'Mukta Malar', sans-serif;
+    background-color: whitesmoke !important;
+    -webkit-print-color-adjust: exact
+}
+
+a, a:hover, a:focus {
+    color: black;
+    text-decoration: none
+}
+
+
+.main-wrapper {
+    display: flex;
+}
+
+#sidebar {
+    width: 30%;
+    height: 102vh;
+    background-color: white;
+    display: inline-flex;
+    flex-direction: column;
+    box-shadow: 0 0 8px black;
+}
+
+#main-content {
+    width: 70%;
+    height: 100vh;
+    background-color: white;
+    display: inline-flex;
+    position: relative;
+    left: 10px
+}
+
+#dashboard-ul {
+    width: 100%;
+    background: white;
+    margin-bottom: 0;
+    height: 69vh;
+}
+
+#dashboard-ul li:not(.inner):hover {
+    background-color: gainsboro;
+}
+
+#dashboard-ul li:hover {
+    cursor: pointer
+}
+
+
+#dashboard-ul li a {
+    display: inline-flex;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.profile-info img {
+    width: 65%;
+    margin: 35px auto;
+    display: inherit;
+}
+
+.profile-info h3 {
+    text-align: center;
+    margin: 45px;
+}
+
+.list-group-item:first-child, .list-group-item:last-child {
+    border-radius: 0
+}
+
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    background-color: #48bd87;
+    border-color: gainsboro;
+    color: black
+}
+
+.inner-group {
+    margin-bottom: 0
+}
+
+.btn-section {
+    margin: 50px;
+    margin-right: 0
+}
+
+.btn-container {
+    margin-left: 45%;
+    margin-top: 5%;
+}
+
+button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed
+}
+
+.tab-content {
+    width: 100%
+}
+
+.tab-pane {
+    width: 90%;
+    margin: 100px 5% 0 5%;
+}
+
+.table-container {
+    overflow: scroll;
+}
+
+*::-webkit-scrollbar { 
+    display: none; 
+}
+
+.print-container {
+    height: 620px;
+}
+
+#print-area {
+    display: none;
+}
+
+.office-label p, .print-section-footer p {
+    margin: 0;
+    font-size: 23px
+}
+
+.print-section-footer {
+    margin-top: 30px;
+    margin-right: 5%;
+}
+
+.print-section-footer p {
+    direction: rtl;
+}
+
+.reprs-section {
+    font-size: 20px;
+    text-align: right;
+    direction: rtl;
+    margin-right: 5%;
+    margin-top: 20px
+}
+
+.reprs-section :first-child {
+    margin: 0
+}
+
+#print-mid-labels {
+    direction: rtl;
+    font-size: 15px;
+    margin-right: 5%;
+    margin-bottom: 15px;
+    margin-top: -100px;
+}
+
+#print-mid-labels p {
+    display: inline-block;
+}
+
+#print-mid-labels p:last-child {
+    float: left;
+    margin-left: 5%;
+}
+
+#device-inventory-table td {
+    vertical-align: middle;
+}
+
+#print-page-title {
+    text-align: center;
+    font-size: 20px;
+}
+
+#todays-closing-table th {
+    width: 20%
+}
+
+td[data-field-name=reception_receipt_id], td[data-field-name=delivery_receipt_id] {
+    cursor: pointer
+}

@@ -1,0 +1,75 @@
+{% extends 'receipts/receipt.html' %}
+{% load static %}
+
+{% block Title %}تفاصيل الفاتورة رقم {% endblock %}
+
+{% block upper_section %}
+    <p id="receipt-detail-company" dir="rtl" style="margin: 30px auto;"></p>
+{% endblock %}
+
+{% block labels %}
+    <h3 style="text-align:center;direction:rtl"><strong id="receipt-detail-type-label">{{ receipt.type }}</strong></h3>
+    <h3 style="text-align:center;direction:rtl">
+        <strong>رقم:
+            <span id="receipt-detail-id-label">{{ receipt.id }}</span>
+        </strong>
+    </h3>
+    
+    <h3 style="direction:rtl; margin-right: 5%">
+        <strong>اسم الشركة: </strong>
+        <span id="receipt-detail-company-label" class="unlockable" data-lock-type="receipt-detail-company">{{ receipt.company_name }}</span>
+        <strong style="margin-right: 40vw">التاريخ: </strong>
+        <span id="receipt-detail-date-label">{{ receipt.date }}</span>
+    </h3>
+{% endblock %}
+
+{% block table %}
+
+<div class="table-container"> 
+    <table class="table table-bordered receipt-detail-table" dir="rtl" data-table-name="receipt-detail-table">
+    
+        <thead style="text-align:center">
+            <tr>
+                <th>م</th>
+                <th>العدد</th>
+                <th>النوع</th>
+                <th>الرقم</th>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+
+    </table>
+</div>
+
+{% endblock %}
+
+{% block lower_section %}
+    
+    <p dir="rtl" style="display: inline;width: 40%;float: right;margin-right: 7%;font-size:20px"><span>اسم المندوب: </span><span id="receipt-detail-outer-repr">{{ receipt.outer_representative }}</span></p>
+    <p dir="rtl" style="display: inline;width: 40%;float: right;margin-right: 5%;font-size:20px"><span>مندوب مركز الخدمة: </span><span id="receipt-detail-inner-repr">{{ receipt.inner_representative }}</span></p>
+
+    <!--<p id="receipt-detail-outer-repr" dir="rtl" style="display: inline;width: 40%;float: right;margin-right: 7%;"></p>
+    <p id="receipt-detail-inner-repr" dir="rtl" style="display: inline;width: 40%;float: right;margin-right: 5%;"></p>
+-->
+{% endblock %}
+
+{% block button %}
+<div class="row btn-container">
+    <button dir="rtl" class="btn btn-success btn-lg receipt-detail-print" id="receipt-detail-print" onclick="$('#print').click();">طباعة</button>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'receipts/js/receipt-detail.js' %}"></script>
+{% endblock %}
+ 
+{% block extra_js %}
+
+<script type="text/javascript">
+    var receipt = {{ receipt_json|safe }},
+        receiptDetailPk = "{{ receipt.id }}",
+        receiptDetailType = "{{ receipt.type }}";
+</script>
+
+{% endblock %}

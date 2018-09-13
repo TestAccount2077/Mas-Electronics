@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}مخزن قطع الغيار{% endblock %}
+
+{% block js %}
+    <script src="{% static 'devices/js/sparepart-inventory-list.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<table id="sparepart-inventory-table" class="table table-bordered" dir="rtl" data-item-type='sparepart'>
+    
+    <thead style="text-align:center">
+        <tr>
+            <th class="sortable" data-criteria="type"><span class='sort-carat'>&#9660;</span>النوع</th>
+            <th>الكمية</th>
+            <th>الحد الأدنى</th>
+            <th>التفاصيل</th>
+            <th>حذف</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for sparepart in spareparts %}
+        <tr data-pk="{{ sparepart.pk }}" name='{{ sparepart.name }}'>
+            <td class="editable-locked" data-input-type="text" data-field-name="name">{{ sparepart.name }}</td>
+            <td class="editable-locked" data-input-type="number" data-field-name="count">{{ sparepart.count }}</td>
+            <td class="editable-locked" data-input-type="number" data-field-name="minimum_qty">{{ sparepart.minimum_qty }}</td>
+            <td><a href="{{ sparepart.pk }}/">ذهاب</a></td>
+            <td><img src="{% static 'images/remove.png' %}" class="icon remove-sparepart" data-pk="{{ sparepart.pk }}"></td>
+        </tr>
+        {% endfor %}
+        
+        <tr>
+            <td data-input-type="text" data-field-name="name" style="height:38px" contenteditable="true"></td>
+            <td data-input-type="number" data-field-name="count" contenteditable="true"></td>
+            <td data-input-type="number" data-field-name="minimum_qty" contenteditable="true"></td>
+            <td>
+                <a href="#" id="sparepart-save-btn">حفظ</a>
+            </td>
+            <td></td>
+        </tr>
+        
+    </tbody>
+</table>
+{% endblock %}

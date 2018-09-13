@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Ayulla Limited | Dashboard</title>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../css/iziToast.min.css">
+        <link rel="stylesheet" href="../css/dashboard.css">
+        <link href="https://fonts.googleapis.com/css?family=Mukta+Malar" rel="stylesheet">
+        <script src="../js/Chart.min.js"></script>
+    </head>
+    
+    <body>
+        <div class="main-wrapper">
+            <div id="sidebar">
+                <div class="profile-info">
+                    <img src="../images/MAS.png">
+                    
+                </div>
+                <ul class="list-group" id="dashboard-ul">
+                    <li class="list-group-item">
+                        <i class="far fa-clipboard"></i>
+                        <a href="#overview">الأجهزة</a>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-cogs"></i>
+                        <a href="#settings">الأرشيف</a>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="#logout">المصاريف</a>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="#logout">الحضور</a>
+                    </li>
+                </ul>
+            </div>
+            <div id="main-content">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane" id="analytics">Analytics</div>
+                    <div role="tabpanel" class="tab-pane" id="profile">Profile</div>
+                    <div role="tabpanel" class="tab-pane" id="settings">Settings</div>
+                    <div role="tabpanel" class="tab-pane" id="logout">Logout</div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src='../js/jquery-cookies.js'></script>
+        <script src="../js/iziToast.min.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+        <script src="../js/dashboard.js"></script>
+    </body>
+    
+</html>

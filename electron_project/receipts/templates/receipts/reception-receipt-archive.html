@@ -1,0 +1,38 @@
+{% extends 'receipts/receipt-archive-base.html' %}
+{% load static %}
+
+{% block Title %}أرشيف فواتير الاستلام{% endblock %}
+
+{% block table_name %}reception-archive-table{% endblock %}
+    
+
+{% block rows %}
+
+    {% for receipt in reception_receipts %}
+        <tr data-row='{{ forloop.counter }}' data-pk="{{ receipt.pk }}">
+            <td>{{ receipt.id }}</td>
+            <td data-company="{{ receipt.company_name }}">{{ receipt.company_name }}</td>
+            <td>{{ receipt.formatted_date }}</td>
+            <td>{{ receipt.outer_representative }}</td>
+            <td>{{ receipt.inner_representative }}</td>
+            <td>
+                <a href="{{ receipt.pk }}" class="receipt-link" data-type="reception" data-pk="{{ receipt.pk }}">ذهاب</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}
+
+{% block js %}
+    
+    <script type="text/javascript">
+        
+        $('#archive-submenu')
+            .show()
+            .children().children(':nth-child(2)').addClass('active');
+        
+        var currentView = 'reception-receipt-archive';
+        
+    </script>
+    
+{% endblock %}

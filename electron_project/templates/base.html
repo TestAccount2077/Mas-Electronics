@@ -1,0 +1,374 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        
+        <title>ماس لصيانة الأجهزة الالكترونية | {% block title %}{% endblock %}</title>
+        
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/iziToast.min.css' %}">
+        
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
+        
+        <link rel="stylesheet" href="{% static 'css/bootstrap-datetimepicker.min.css' %}">
+        
+        <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
+        
+        <link rel="stylesheet" href="{% static 'css/selectables.css' %}">
+        
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+        <link rel="stylesheet" href="{% static 'css/print-style.css' %}" media="print">
+        
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        
+        {% block css %}
+        {% endblock %}
+        
+    </head>
+    
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top" style="margin-bottom: 0">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">Mas Electronics&trade;</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                
+              <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="font-size: 17px;">خيارات <span class="caret"></span></a>
+                  <ul class="dropdown-menu" style="text-align:right;font-size: 17px;">
+                    
+                    <li id="print"><a href="#"><span class="glyphicon glyphicon-print" aria-hidden="true" style="float:left"></span>طباعة</a></li>
+                    <li id="filter-btn"><a href="#"><span class="glyphicon glyphicon-filter" aria-hidden="true" style="float:left"></span>فلترة</a></li>
+                    <li id="total-filter-btn" data-toggle='modal' data-target='#total-filter-modal' style="display:none"><a href="#"><span class="glyphicon glyphicon-filter" aria-hidden="true" style="float:left"></span>فلترة شاملة</a></li>
+                    
+                    <li role="separator" class="divider"></li>
+                    <li id="upload"><a href="#"><span class="glyphicon glyphicon-cloud-upload" aria-hidden="true" style="float:left"></span>رفع</a></li>
+                    <li id="download"><a href="#"><span class="glyphicon glyphicon-cloud-download" aria-hidden="true" style="float:left"></span>تحميل</a></li>
+                    
+                    <li role="separator" class="divider extra-separator" style="display:none"></li>
+                    <li id="close-account" style="display:none" class='extra-option'><a href="#"><i class="fas fa-lock" aria-hidden="true" style="float:left"></i>غلق الحساب</a></li>
+                    <ul class="nav navbar-nav navbar-left">
+                </ul>
+                    <li id="receive" style="display:none" class='extra-option quick-action' data-action='receive'><a href="#"><span class="glyphicon glyphicon-cloud-download" aria-hidden="true" style="float:left"></span>استلام</a></li>
+                    <li id="deliver" style="display:none" class='extra-option quick-action' data-action='deliver'><a href="#"><span class="glyphicon glyphicon-cloud-download" aria-hidden="true" style="float:left"></span>تسليم</a></li>
+                    
+                  </ul>
+                </li>
+              </ul>
+                
+                <ul class="nav navbar-nav navbar-left">
+                    <button class="btn btn-success" id="back" style="margin-top: 6px;margin-left: 30px;" onclick="history.back();">رجوع</button>
+                </ul>
+                
+                <ul class="nav navbar-nav navbar-right">
+                    <p style="margin-top: 15px;margin-left: 30px;">الرصيد المتاح:
+                        <span id="current-balance-label">{{ current_balance }}</span>
+                        جنيه | عهدة أول اليوم:
+                        <span id="opening-balance-label"> {{ opening_balance }} </span>
+                        جنيه
+                    </p>
+                </ul>
+                
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+        
+        <div class="main-wrapper">
+            <div id="sidebar" data-expanded="true">
+                <div class="profile-info">
+                    <img id="logo" src="{% static 'images/MAS.png' %}">
+
+                </div>
+                <ul class="list-group" id="dashboard-ul">
+                    <li class="list-group-item main-tab" id="devices-tab">
+                        <i class="fas fa-wrench"></i>
+                        <a href="#">الأجهزة</a>
+                    </li>
+
+                    <div class="dashboard-submenu" id="devices-submenu" style="display:none">
+                        <ul class="list-group inner-group">
+                            <li class="list-group-item inner" onclick="location.href = '/devices/device-inventory/'">
+                                <a href="#">مخزن الأجهزة</a>
+                            </li>
+
+                            <li class="list-group-item inner" onclick="location.href = '/devices/maintenance/'">
+                                <a href="#">الصيانة</a>
+                            </li>
+
+                            <li class="list-group-item inner" onclick="location.href = '/devices/sparepart-inventory/'">
+                                <a href="#">مخزن قطع الغيار</a>
+                            </li>
+                            
+                            <li class="list-group-item inner" onclick="location.href = '/devices/total-filter/'">
+                                <a href="#">الفلترة الشاملة</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <li class="list-group-item main-tab" id="receipts-tab">
+                        <i class="far fa-clipboard"></i>
+                        <a href="#">الفواتير</a>
+                    </li>
+
+                    <div class="dashboard-submenu" id="receipts-submenu" style="display:none">
+
+                        <ul class="list-group inner-group">
+                            <li class="list-group-item inner" onclick="location.href = '/receipts/new-reception-receipt/'">
+                                <a href="#new-reception-receipt">فاتورة استلام جديدة</a>
+                            </li>
+
+                            <li class="list-group-item inner" onclick="location.href = '/receipts/new-delivery-receipt/'">
+                                <a href="#new-delivery-receipt">فاتورة تسليم جديدة</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <li class="list-group-item main-tab" id="archive-tab">
+                        <i class="fas fa-book"></i>
+                        <a href="#">الأرشيف</a>
+                    </li>
+
+                    <div class="dashboard-submenu" id="archive-submenu" style="display:none">
+
+                        <ul class="list-group inner-group">
+                            <li class="list-group-item inner" onclick="location.href = '/devices/device-archive/'">
+                                <a href="#device-archive">أرشيف الأجهزة</a>
+                            </li>
+
+                            <li class="list-group-item inner" onclick="location.href = '/receipts/reception-receipt-archive/'">
+                                <a href="#reception-receipt-archive">أرشيف فواتير الاستلام</a>
+                            </li>
+
+                            <li class="list-group-item inner" onclick="location.href = '/receipts/delivery-receipt-archive/'">
+                                <a href="#delivery-receipt-archive">أرشيف فواتير التسليم</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <li class="list-group-item main-tab" id="expenses-tab">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <a href="#">المصاريف</a>
+                    </li>
+
+                    <div class="dashboard-submenu" id="expenses-submenu" style="display:none">
+
+                        <ul class="list-group inner-group">
+                            <li class="list-group-item inner" onclick="location.href = '/expenses/daily-expenses/'">
+                                <a href="#daily-expenses">مصاريف اليوم</a>
+                            </li>
+
+                            <li class="list-group-item inner" onclick="location.href = '/expenses/expense-archive/'">
+                                <a href="#expense-archive-list">أرشيف المصاريف</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <li class="list-group-item main-tab" id="attendance-tab">
+                        <i class="fas fa-users"></i>
+                        <a href="#">الحضور</a>
+                    </li>
+
+                    <div class="dashboard-submenu" id="attendance-submenu" style="display:none">
+
+                        <ul class="list-group inner-group">
+                            <li class="list-group-item inner" onclick="location.href = '/attendance/daily-attendance/'">
+                                <a href="#todays-attendance">حضور اليوم</a>
+                            </li>
+
+                            <li class="list-group-item inner" onclick="location.href = '/attendance/attendance-archive/'">
+                                <a href="#attendance-archive">أرشيف الحضور</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <li class="list-group-item main-tab" id="report-tab">
+                        <i class="fas fa-chart-pie"></i>
+                        <a href="#">التقارير</a>
+                    </li>
+
+                    <div class="dashboard-submenu" id="report-submenu" style="display:none">
+
+                        <ul class="list-group inner-group">
+                            <li class="list-group-item inner">
+                                <a href="#">تقارير يومية</a>
+                            </li>
+
+                            <li class="list-group-item inner">
+                                <a href="#">تقارير أسبوعية</a>
+                            </li>
+
+                            <li class="list-group-item inner">
+                                <a href="#">تقارير شهرية</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                </ul>
+            </div>
+
+            <a href="#filter-view" style="display:none"></a>
+            <a href="#receipt-detail" style="display:none"></a>
+
+            <div id="main-content">
+                <div class="tab-pane scrollable">
+                    {% block body %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+
+        <div id='new-password-modal' class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title people-modal-title" id="modalLongTitle">كلمة سر جديدة</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h1 class="modal-body-content">يرجى ادخال كلمة سر جديدة وحفظها بمكان امن</h1>
+                        <input class="form-control" type="password" placeholder='كلمة السر' id="password" style="margin-bottom:20px">
+                        <input class="form-control" type="password" placeholder='كلمة السر مرة أخرى' id="password-confirm">
+                    </div>
+                    <div class="modal-footer" style="background-color:#F3F6F8;border-radius:6px">
+                        <br>
+                        <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">الغاء</button>
+                        <button id='confirm-new-password-btn' type="button" class="btn btn-success">حفظ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id='filter-modal' class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title people-modal-title" id="filter-header"></h5>
+                    </div>
+                    <div class="modal-body" id="filter-body"></div>
+                    <div class="modal-footer" style="background-color:#F3F6F8;border-radius:6px">
+                        <br>
+                        <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">الغاء</button>
+                        <button id='confirm-filter-btn' type="button" class="btn btn-success">فلترة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id='total-filter-modal' class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title people-modal-title">الفلترة الشاملة</h5>
+                    </div>
+                    <div class="modal-body" id="filter-body">
+                        <input style="margin-bottom:20px" type="text" class="form-control" id="total-filter-serial" placeholder="رقم الجهاز">
+                        <input style="margin-bottom:20px" type="text" class="form-control" id="total-filter-company" placeholder="اسم الشركة">
+                        <input style="margin-bottom:20px" type="text" class="form-control" id="total-filter-type" placeholder="نوع الجهاز">
+                        <input style="margin-bottom:20px" type="text" class="form-control" id="total-filter-from" placeholder="من">
+                        <input style="margin-bottom:20px" type="text" class="form-control" id="total-filter-to" placeholder="الى">
+                    </div>
+                    <div class="modal-footer" style="background-color:#F3F6F8;border-radius:6px">
+                        <br>
+                        <!--<button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">الغاء</button>-->
+                        <button id='confirm-total-filter-btn' type="button" class="btn btn-success">فلترة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/iziToast.min.js' %}"></script>
+        
+        <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+        
+        <script src="{% static 'js/moment.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
+        
+        <script src="{% static 'js/sweetalert.min.js' %}"></script>
+        <script src="{% static 'js/selectables.js' %}"></script>
+        
+        <script src="{% static 'js/base.js' %}"></script>
+        <!--<script src="{% static 'accounts/js/dashboard.js' %}"></script>-->
+        <script src="{% static 'accounts/js/functions.js' %}"></script>
+        <script src="{% static 'js/fontawesome-all.min.js' %}"></script>
+        {% block js %}
+        {% endblock %}
+        
+        <div id="print-area">
+            
+            <div class="print-section-header" style="margin-bottom: 90px;">
+                <img src="/static/images/MAS.png" style="width: 350px;height: 250px;margin-top: -60px;margin-left: -30px;">
+                
+                <div style="display: inline;margin-left: 3.5%;">
+                    <p id="print-receipt-page-num" style="display: inline;font-size: 20px;position:relative;bottom:30px;left:15px"></p>
+                </div>
+                
+                <strong class="office-label" style="display: inline-block;vertical-align: text-bottom;float: right;margin-top: 30px;direction: rtl;margin-right:5%">
+                    <p>ماس لاصلاح وصيانة</p>
+                    <p>الأجهزة الالكترونية</p>
+                    <p>عبد الباسط بعرورة وشركاه</p>
+                </strong>
+                
+                <div style="margin: -50px;position: relative;bottom: 40px;">
+                    <p id="receipt-type-label" style="display: inline-block;margin-left: 45.5%;font-size: 20px"></p>
+                    <p id="print-page-title"></p>
+                </div>
+                
+            </div>
+            
+            <div id="print-mid-labels">
+                <p><strong>تاريخ الطباعة: </strong><span id="print-date-label"></span></p>
+                <p style="display:none"><strong>اسم الشركة: </strong><span id="print-company-label"></span></p>
+            </div>
+            
+            <div class="table-container print-container" style="">
+                <table class="table table-bordered" id="print-table" dir="rtl">
+                    <thead style="text-align:center"></thead>
+                    <tbody>
+                        {% for x in 'xxxxxxxxxxxxxxx' %}
+                        <tr data-row='{{ forloop.counter }}'>
+                            <td style="height: 37px" data-num='0'></td>
+                            <td class="new-reception-cell editable" data-num='1'></td>
+                            <td class="new-reception-cell editable" data-num='2'></td>
+                            <td data-num='3' style="width:550px; text-align:right"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="reprs-section">
+                <p><span>اسم المندوب: </span><span id="outer-repr-label"></span></p>
+                <p><span>مندوب مركز الخدمة: </span><span id="inner-repr-label"></span></p>
+            </div>
+            
+            <div class="print-section-footer">
+                <p>تليفون: 01283625125 - 01222895585 - 01222727122, فاكس: 035184841</p>
+                <p>ايميل: mohamedlabeb549@gmail.com</p>
+                <p>العنوان: الاسكندرية - خورشيد- الزوايدة - شارع 4 أولياء الرحمن - أمام شركة الكهرباء</p>
+            </div>
+            
+        </div>
+        
+    </body>
+</html>

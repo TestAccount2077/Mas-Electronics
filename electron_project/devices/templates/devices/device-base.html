@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}{% block Title %}{% endblock %}{% endblock %}
+
+{% block body %}
+<table id="{% block table_id %}{% endblock %}" class="table table-bordered" dir="rtl">
+    
+    <thead style="text-align:center">
+        <tr>
+            <th></th>
+            <th>م</th>
+            <th>رقم اللوحة</th>
+            <th class="sortable" data-criteria='company'><span class='sort-carat'>&#9660;</span>اسم الشركة</th>
+            <th class="sortable" data-criteria='type'><span class='sort-carat'>&#9660;</span>نوع الجهاز</th>
+            <th class="sortable" data-criteria='date'><span class='sort-carat'>&#9660;</span>التاريخ</th>
+            {% block extra_headers %}{% endblock %}
+            <th>التفاصيل</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% block rows %}
+        {% endblock %}
+    </tbody>
+    
+</table>
+{% endblock %}
