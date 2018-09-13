@@ -12,6 +12,8 @@
     
     <thead style="text-align:center">
         <tr>
+            <th></th>
+            <th>م</th>
             <th class="sortable" data-criteria="type"><span class='sort-carat'>&#9660;</span>النوع</th>
             <th>الكمية</th>
             <th>الحد الأدنى</th>
@@ -23,8 +25,10 @@
     <tbody>
         {% for sparepart in spareparts %}
         <tr data-pk="{{ sparepart.pk }}" name='{{ sparepart.name }}'>
+            <td></td>
+            <td>{{ forloop.counter }}</td>
             <td class="editable-locked" data-input-type="text" data-field-name="name">{{ sparepart.name }}</td>
-            <td class="editable-locked" data-input-type="number" data-field-name="count">{{ sparepart.count }}</td>
+            <td class="editable-locked {{ sparepart.count_lt_min_class }}" data-input-type="number" data-field-name="count">{{ sparepart.count }}</td>
             <td class="editable-locked" data-input-type="number" data-field-name="minimum_qty">{{ sparepart.minimum_qty }}</td>
             <td><a href="{{ sparepart.pk }}/">ذهاب</a></td>
             <td><img src="{% static 'images/remove.png' %}" class="icon remove-sparepart" data-pk="{{ sparepart.pk }}"></td>
@@ -32,6 +36,8 @@
         {% endfor %}
         
         <tr>
+            <td></td>
+            <td></td>
             <td data-input-type="text" data-field-name="name" style="height:38px" contenteditable="true"></td>
             <td data-input-type="number" data-field-name="count" contenteditable="true"></td>
             <td data-input-type="number" data-field-name="minimum_qty" contenteditable="true"></td>

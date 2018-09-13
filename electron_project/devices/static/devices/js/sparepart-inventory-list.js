@@ -13,9 +13,9 @@ $(document).on('click', '#sparepart-save-btn', function (e) {
     
     var btn = $(this),
         row = btn.parent().parent(),
-        name = row.children(':first').text(),
-        count = row.children(':nth-child(2)').text(),
-        minimum = row.children(':nth-child(3)').text();
+        name = row.children(':nth-child(3)').text(),
+        count = row.children(':nth-child(4)').text(),
+        minimum = row.children(':nth-child(5)').text();
     
     if (!name || !count || !minimum) {
         
@@ -96,18 +96,22 @@ $(document).on('click', '#sparepart-save-btn', function (e) {
             
             row.attr('data-pk', sparepart.pk);
             
-            row.children(':first, :nth-child(2), :nth-child(3)')
+            row.children(':nth-child(3), :nth-child(4), :nth-child(5)')
                 .attr('contenteditable', false)
                 .addClass('editable-locked');
             
-            row.children(':nth-child(4)').children().remove();
+            row.children(':nth-child(4)').addClass(sparepart.count_lt_min_class);
             
-            row.children(':nth-child(4)').append('<a href="#sparepart-detail">ذهاب</a>');
+            row.children(':nth-child(6)').children().remove();
+            
+            row.children(':nth-child(6)').append('<a href="#">ذهاب</a>');
+            
+            row.children(':nth-child(2)').text(row.parent().children().length);
             
             var newLastRow = $('<tr></tr>');
             
             newLastRow.append(
-                '<td data-input-type="text" data-field-name="name" style="height:38px"' +
+                '<td></td><td></td><td data-input-type="text" data-field-name="name" style="height:38px"' +
                 'contenteditable="true"></td>' +
                 '<td data-input-type="number" data-field-name="count" contenteditable="true"></td>' +
                 '<td data-input-type="number" data-field-name="minimum_qty" contenteditable="true"></td>' + '<td><a href="#" id="sparepart-save-btn">حفظ</a>' +
@@ -143,6 +147,12 @@ $(document).on('click', '.remove-sparepart', function (e) {
                 row.fadeOut(300, function () {
                     $(this).remove();
                 });
+                
+                // Re-ordering Table
+                
+                setTimeout(function () {
+                    reorderTableCounters('#sparepart-inventory-table tbody tr:not(:last)');
+                }, 500);
                 
             },
             

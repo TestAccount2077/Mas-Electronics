@@ -12,6 +12,8 @@
 
     {% for expense in expenses %}
     <tr data-pk="{{ expense.pk }}">
+        <td></td>
+        <td>{{ forloop.counter }}</td>
         {% if expense.balance_change < 0 %}
         <td class="editable-locked expense-td" data-field-name="formatted_balance_change" data-input-type="number" data-sign="-">{{ expense.formatted_balance_change }}</td>
         <td class="editable-locked revenue-td" data-field-name="formatted_balance_change" data-input-type="number" data-sign="+"></td>
@@ -30,6 +32,8 @@
     {% endfor %}
     
     <tr>
+        <td></td>
+        <td></td>
         <td class="editable-locked empty expense-td" data-field-name="formatted_balance_change" data-sign="-" data-input-type="text" style="height:38px" contenteditable="true"></td>
         <td class="editable-locked empty revenue-td" data-field-name="formatted_balance_change" data-sign="+" data-input-type="text" contenteditable="true"></td>
         <td class="editable-locked empty" data-field-name="description" data-input-type="text" contenteditable="true"></td>

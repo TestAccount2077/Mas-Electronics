@@ -1102,7 +1102,11 @@ $(document).on('focusout', '.editable-unlocked', function (e) {
                         position: 'topRight',
                         zindex: 99999
                     });
+                    
+                    cell.parent().children(':nth-child(4)').addClass('expense-td');
 
+                } else {
+                    cell.parent().children(':nth-child(4)').removeClass('expense-td');
                 }
             }
 
@@ -1113,11 +1117,13 @@ $(document).on('focusout', '.editable-unlocked', function (e) {
                 }
                 
                 var body = cell.parent().parent();
-
-                $.each(data.new_totals, function (id, total) {
-                    body.children('tr[data-pk=' + id + ']').children(':nth-child(5)').text(total);
-                });
-
+                
+                if (data.new_totals) {
+                    $.each(data.new_totals, function (id, total) {
+                        body.children('tr[data-pk=' + id + ']').children(':nth-child(7)').text(total);
+                    });
+                }
+                
                 var closingTable = $('#todays-closing-table');
 
                 if (closingTable.is(':visible')) {

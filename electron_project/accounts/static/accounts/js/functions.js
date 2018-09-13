@@ -521,3 +521,11 @@ function handleQuickAction (action) {
     }, 500);
     
 }
+
+function reorderTableCounters(tableSelector) {
+    
+    $(tableSelector).each(function (index, element) {
+        $(element).children(':nth-child(2)').text(index + 1);
+    });
+    
+}

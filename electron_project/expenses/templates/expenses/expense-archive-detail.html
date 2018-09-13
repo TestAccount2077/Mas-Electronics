@@ -12,6 +12,9 @@
 
     {% for expense in daily_expense.expenses %}
     <tr data-pk="{{ expense.pk }}">
+        
+        <td></td>
+        <td>{{ forloop.counter }}</td>
         {% if expense.balance_change < 0 %}
         <td class='expense-td' data-field-name="formatted_balance_change" data-input-type="number" data-sign="-">{{ expense.formatted_balance_change }}</td>
         <td class='revenue-td' data-field-name="formatted_balance_change" data-input-type="number" data-sign="+"></td>
