@@ -87,8 +87,6 @@ class MaintenanceDevice(TimeStampedModel):
     
     assignee = models.CharField(max_length=300, default='')
     flaws = models.CharField(max_length=300, default='')
-    sparepart = models.ForeignKey('Sparepart', null=True, blank=True)
-    sparepart_count = models.IntegerField(null=True, blank=True)
     notes = models.CharField(max_length=300, default='')
     
     deleted = models.BooleanField(default=False)
@@ -108,14 +106,10 @@ class MaintenanceDevice(TimeStampedModel):
             
             'assignee': self.assignee,
             'flaws': self.flaws,
-            'sparepart_name': self.sparepart.name if self.sparepart else '',
-            'sparepart_count': self.sparepart_count if self.sparepart_count is not None else '',
             'notes': self.notes,
             
             'assignee_class': 'editable-locked' if self.assignee else 'maintenance-empty',
             'flaws_class': 'editable-locked' if self.flaws else 'maintenance-empty',
-            'sparepart_name_class': 'editable-locked' if self.sparepart else 'maintenance-empty',
-            'sparepart_count_class': 'editable-locked' if self.sparepart_count else 'maintenance-empty',
             'notes_class': 'editable-locked' if self.notes else 'maintenance-empty'
         }
         
@@ -212,3 +206,18 @@ class Sparepart(TimeStampedModel):
     def count_lt_min_class(self):
         
         return 'expense-td' if self.count < self.minimum_qty else ''
+
+class DeviceSparepartRelation(TimeStampedModel):
+    
+    device = models.ForeignKey(MaintenanceDevice, null=True, blank=True, related_name='spareparts')
+    sparepart = models.ForeignKey(Sparepart, null=True, blank=True, related_name='devices')
+    
+    count = models.IntegerField(default=0)
+    
+    def as_dict(self):
+        
+        return {
+            'id': self.id,
+            'name': self.sparepart.name,
+            'count': self.count
+        }

@@ -1,4 +1,5 @@
-var currentView = 'maintenance';
+var devicePk,
+    currentView = 'maintenance';
 
 $(document).ready(function () {
     
@@ -10,6 +11,10 @@ $(document).ready(function () {
     
     $('#maintenance-serial-input').autocomplete({
         source: inventorySerials
+    });
+    
+    $('#edit-sparepart-input').autocomplete({
+        source: spareparts
     });
     
 });
@@ -57,21 +62,29 @@ $(document).on('focusout', '#maintenance-serial-input', function (e) {
             // Opening editable cells
             element.children('.maintenance-empty').attr('contenteditable', true);
             
-            element.children(':nth-child(10)').html('<a href="/devices/' + device.serial_number + '/" class="device-detail-button" data-device-id="' + device.pk + '" data-device-serial="' + device.serial_number + '">ذهاب</a>');
+            element.children(':nth-child(9)').html('<a href="/devices/' + device.serial_number + '/" class="device-detail-button" data-device-id="' + device.pk + '" data-device-serial="' + device.serial_number + '">ذهاب</a>');
+            
+            element.children(':nth-child(7)').html('<a href="#" class="sparepart-edit">تعديل</a>');
             
             element.children(':last').append('<img src="/static/images/remove.png" class="icon remove-maintenance-item" data-pk="' + device.pk + '">');
 
-            element.after('<tr><td class="input-td" data-input-type="text" data-field-name="serial_number" style="height:38px" contenteditable="true"><input id="maintenance-serial-input" class="table-input"></td>' +
-                          '<td data-input-type="text" data-field-name="company_name"></td>' +
-                          '<td data-input-type="text" data-field-name="device_type"></td>' +
-                          '<td data-input-type="date" data-field-name="entrance_date"></td>' +
-                          '<td class="maintenance-empty" data-input-type="text" data-field-name="assignee"></td>' +
-                          '<td class="maintenance-empty" data-input-type="text" data-field-name="flaws"></td>' +
-                          '<td class="maintenance-empty" data-input-type="text" data-field-name="sparepart_name"></td>' +
-                          '<td class="maintenance-empty" data-input-type="number" data-field-name="sparepart_count"></td>' +
-                          '<td class="maintenance-empt" data-input-type="text" data-field-name="notes"></td>' +
-                          '<td></td><td></td></tr>'
-                         );
+            element.after(`
+                <tr>
+                    <td class="input-td" data-input-type="text" data-field-name="serial_number" style="height:38px" contenteditable="true">
+                        <input id="maintenance-serial-input" class="table-input">
+                    </td>
+                    
+                    <td data-input-type="text" data-field-name="company_name"></td>
+                    <td data-input-type="text" data-field-name="device_type"></td>
+                    <td data-input-type="date" data-field-name="entrance_date"></td>
+                    <td class="maintenance-empty" data-input-type="text" data-field-name="assignee"></td>
+                    <td class="maintenance-empty" data-input-type="text" data-field-name="flaws"></td>
+                    <td></td>
+                    <td class="maintenance-empt" data-input-type="text" data-field-name="notes"></td>
+                    <td></td>
+                    <td></td>
+                </tr>`
+            );
             
             inventorySerials.remove(serialNumber);
             
@@ -236,3 +249,146 @@ $(document).on('click', '.remove-maintenance-item', function (e) {
     executeAfterPassword(removeMaintenanceItem);
     
 });
+
+$(document).on('click', '.sparepart-edit', function () {
+    
+    devicePk = $(this).parent().parent().data('pk');
+    
+    var spareparts = devicesAndSpareparts[devicePk];
+        
+    $('#sparepart-container').empty();
+    
+    $.each(spareparts, function (index, sparepart) {
+        
+        var element = composeSparepartElement(sparepart);
+        
+        $('#sparepart-container').append(element);
+        
+    });
+    
+    $('#sparepart-edit-modal').modal('show');
+    
+});
+
+$(document).on('click', '#add-sparepart-btn', function (e) {
+    
+    addSparepart();
+    
+});
+
+$(document).on('keypress', '#edit-sparepart-input, #edit-count-input', function (e) {
+    
+    if (e.which === 13) {
+        addSparepart();
+    }
+    
+});
+
+
+function addSparepart() {
+    
+    var sparepart = $('#edit-sparepart-input').val(),
+        count = $('#edit-count-input').val();
+    
+    if (!sparepart || !count) {
+        
+        alert('No fields')
+        
+        return;
+    }
+    
+    if (!spareparts.includes(sparepart)) {
+        
+        alert('Doesnt exist')
+        
+        return;
+        
+    }
+    
+    if (!isNumeric(count)) {
+        
+        alert('Not numeric')
+        
+        return;
+    }
+    
+    $.ajax({
+        url: 'ajax/add-sparepart-item/',
+        
+        data: {
+            devicePk: devicePk,
+            sparepart: sparepart,
+            count: count
+        },
+        
+        success: function (data) {
+            
+            if (data.qty_lt_min) {
+                
+                iziToast.warning({
+                    title: 'تحذير',
+                    message: 'الكمية أقل من الحد الأدنى',
+                    position: 'topRight',
+                    zindex: 99999
+                });
+                
+            }
+            
+            var sparepart = data.sparepart,
+                element = $(`.sparepart-item[data-pk=${ sparepart.id }]`);
+            
+            if (element.length) {
+                element.children(':first').children(':nth-child(4)').text(sparepart.count);
+            }
+            
+            else {
+                
+                var element = composeSparepartElement(sparepart);
+                
+                $('#sparepart-container').append(element);
+                
+            }
+        },
+        
+        error: generateAlerts
+    });
+}
+
+$(document).on('click', '.sparepart-delete', function (e) {
+    
+    var btn = $(this),
+        pk = btn.parent().parent().data('pk');
+    
+    $.ajax({
+        url: 'ajax/remove-sparepart-item/',
+        data: {
+            pk: pk,
+            devicePk: devicePk
+        },
+        
+        success: function (data) {
+            
+            btn.parent().parent().remove();
+            
+            devicesAndSpareparts[devicePk] = data.spareparts;
+            
+            
+        }
+        
+    });
+    
+});
+
+function composeSparepartElement(sparepart) {
+    
+    return `
+        <div class="sparepart-item" dir="rtl" data-pk="${ sparepart.id }">
+            <h3 style="display:inline-block; width:100%">
+                <strong>&bull; اسم القطعة: </strong><span dir="ltr">${ sparepart.name }</span>
+                <strong>الكمية</strong>: <span>${ sparepart.count }</span>
+                <a href="#" style="float:left; margin-right:10px" class="sparepart-delete">حذف</a>
+                <a href="#" style="float:left">تعديل</a>
+            </h3>
+        </div>`;
+    
+}

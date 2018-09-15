@@ -6,7 +6,9 @@
 {% block js %}
 
     <script type="text/javascript">
-        var inventorySerials = {{ inventory_serials|safe }};
+        var inventorySerials = {{ inventory_serials|safe }},
+            spareparts = {{ spareparts|safe }},
+            devicesAndSpareparts = {{ devices_and_spareparts|safe }};
     </script>
 
     <script src="{% static 'devices/js/maintenance.js' %}"></script>
@@ -25,7 +27,6 @@
             <th>مسئول الصيانة</th>
             <th>مظاهر العيب</th>
             <th>ما تم تغييره</th>
-            <th>العدد</th>
             <th>ملاحظات</th>
             <th>التفاصيل</th>
             <th>حذف</th>
@@ -41,8 +42,7 @@
             <td data-input-type="date" data-field-name="entrance_date">{{ device.entrance_date }}</td>
             <td class="{{ device.assignee_class }}" data-input-type="text" data-field-name="assignee">{{ device.assignee }}</td>
             <td class="{{ device.flaws_class }}" data-input-type="text" data-field-name="flaws">{{ device.flaws }}</td>
-            <td class="{{ device.sparepart_name_class }}" data-input-type="text" data-field-name="sparepart_name" data-value="{{ device.sparepart_name }}">{{ device.sparepart_name }}</td>
-            <td class="{{ device.sparepart_count_class }}" data-input-type="number" data-field-name="sparepart_count" data-value="{{ device.sparepart_count }}">{{ device.sparepart_count }}</td>
+            <td><a href="#" class="sparepart-edit">تعديل</a></td>
             <td class="{{ device.notes_class }} {% if device.notes_class == 'editable-locked' %}truncate{% endif %}" data-input-type="text" data-field-name="notes">{{ device.notes }}</td>
             <td><a href="{% url 'devices:device-detail' device.serial_number %}" class="device-detail-button" data-device-id="{{ device.pk }}" data-device-serial="{{ device.serial_number }}">ذهاب</a></td>
             <td><img src="{% static 'images/remove.png' %}" class="icon remove-maintenance-item" data-pk="{{ device.pk }}"></td>
@@ -55,8 +55,7 @@
             <td data-input-type="date" data-field-name="entrance_date"></td>
             <td class="maintenance-empty last" data-input-type="text" data-field-name="assignee"></td>
             <td class="maintenance-empty last" data-input-type="text" data-field-name="flaws"></td>
-            <td class="maintenance-empty last" data-input-type="text" data-field-name="sparepart_name" data-value=""></td>
-            <td class="maintenance-empty last" data-input-type="number" data-field-name="sparepart_count" data-value=""></td>
+            <td></td>
             <td class="maintenance-empty last" data-input-type="text" data-field-name="notes"></td>
             <td></td>
             <td></td>
@@ -64,4 +63,25 @@
     </tbody>
     
 </table>
+
+<div id='sparepart-edit-modal' class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title people-modal-title">اضافة/تعديل قطع الغيار</h5>
+            </div>
+            <div class="modal-body" id="filter-body">
+                <div id="sparepart-container" style="margin: -10px 10px 30px 0"></div>
+                <input style="margin-bottom:20px" type="text" class="form-control" id="edit-sparepart-input" placeholder="قطعة الغيار">
+                <input style="margin-bottom:20px" type="text" class="form-control" id="edit-count-input" placeholder="الكمية">
+            </div>
+            <div class="modal-footer" style="background-color:#F3F6F8;border-radius:6px">
+                <br>
+                <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">انهاء</button>
+                <button id='add-sparepart-btn' type="button" class="btn btn-success">اضافة</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

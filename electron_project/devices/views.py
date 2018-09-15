@@ -28,11 +28,22 @@ def maintenance_view(request):
     
     data = get_abstract_data()
     
-    data['maintenance_devices'] = (device.as_dict() for device in MaintenanceDevice.objects.filter(deleted=False))
+    maintenance_devices = MaintenanceDevice.objects.filter(deleted=False)
+    
+    data['maintenance_devices'] = (device.as_dict() for device in maintenance_devices)
     
     data['inventory_serials'] = [
-        device.serial_number for device in InventoryDevice.objects.filter(delivered=False, deleted=False, maintenance_device__isnull=True)
+        device.serial_number for device in InventoryDevice.objects.filter(
+            delivered=False, deleted=False, maintenance_device__isnull=True
+        )
     ]
+    
+    data['devices_and_spareparts'] = {
+        device.pk: [sparepart.as_dict() for sparepart in device.spareparts.all()]
+        for device in maintenance_devices
+    }
+    
+    data['spareparts'] = [sparepart.name for sparepart in Sparepart.objects.filter(deleted=False)]
     
     return render(request, 'devices/maintenance.html', context=data)
 
@@ -72,7 +83,7 @@ def device_archive_view(request):
     data['archive_devices'] = (device.as_dict() for device in archive_devices)
     
     return render(request, 'devices/device-archive.html', context=data)
-    
+
 def device_detail(request, serial_number):
     
     data = get_abstract_data()
@@ -184,6 +195,68 @@ def remove_maintenance_device(request):
         device.delete()
         
         return JsonResponse(context)
+
+    
+def add_sparepart_item(request):
+    
+    if request.is_ajax():
+        
+        data = request.GET
+        
+        name = data['sparepart']
+        count = int(data['count'])
+        
+        device = MaintenanceDevice.objects.get(pk=data['devicePk'])
+        sparepart = Sparepart.objects.get(name=name)
+        
+        if sparepart.count - count < 0:
+            
+            return JsonResponse({
+                'not_enough_spareparts': 'لا توجد قطع غيار كافية من هذا النوع'
+            }, status=400)
+        
+        sparepart_qs = device.spareparts.filter(sparepart__name=name)
+        
+        if sparepart_qs.exists():
+            sparepart_relation = sparepart_qs.first()
+            
+            sparepart_relation.count += count
+            
+            sparepart_relation.save()
+            
+        else:
+            sparepart_relation = device.spareparts.create(sparepart=sparepart, count=count)
+        
+        sparepart.count -= count
+        sparepart.save()
+        
+        context = {
+            'sparepart': sparepart_relation.as_dict()
+        }
+        
+        if sparepart.count < sparepart.minimum_qty:
+            context['qty_lt_min'] = True
+        
+        return JsonResponse(context)
+    
+def remove_sparepart_item(request):
+    
+    if request.is_ajax():
+        
+        relation = DeviceSparepartRelation.objects.get(pk=request.GET['pk'])
+        
+        sparepart = relation.sparepart
+        
+        sparepart.count += relation.count
+        sparepart.save()
+        
+        relation.delete()
+        
+        device = MaintenanceDevice.objects.get(pk=request.GET['devicePk'])
+        
+        return JsonResponse({
+            'spareparts': [sparepart.as_dict() for sparepart in device.spareparts.all()]
+        })
 
 @csrf_exempt
 def create_sparepart(request):

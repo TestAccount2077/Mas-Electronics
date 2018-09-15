@@ -17,6 +17,8 @@ urlpatterns = [
     # Ajax URLs
     url(r'ajax/create-maintenance-device/$', create_maintenance_device),
     url(r'ajax/remove-maintenance-device/$', remove_maintenance_device),
+    url(r'ajax/add-sparepart-item/$', add_sparepart_item),
+    url(r'ajax/remove-sparepart-item/$', remove_sparepart_item),
         
     url(r'ajax/create-sparepart/$', create_sparepart),
     url(r'ajax/edit-sparepart/$', edit_sparepart),
