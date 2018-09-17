@@ -104,3 +104,50 @@ class DownloadHandler(object):
                     file.extractall('.')
                     
                 os.remove('new data.zip')
+
+class UpdateHandler(object):
+    
+    errors = {}
+    
+    def __init__(self):
+        
+        flags = None
+        
+        SCOPES = 'https://www.googleapis.com/auth/drive.file'
+        store = file.Storage('storage.json')
+        creds = store.get()
+
+        if not creds or creds.invalid:
+            
+            flow = client.flow_from_clientsecrets(
+                'client_secret.json', scope=SCOPES
+            )
+
+            if flags:
+                creds = tools.run_flow(flow, store, flags)
+            else:
+                creds = tools.run(flow, store)
+        
+        try:
+            self.DRIVE = build('drive', 'v3', http=creds.authorize(Http()))
+            self.download_and_extract()
+        
+        except httplib2.ServerNotFoundError:
+            self.errors['disconnected'] = 'لا يتوفر اتصال بالانترنت'
+    
+    def download_and_extract(self):
+        
+        data = self.DRIVE.files().get_media(fileId='1Dsx3Ho65qUvluA98n-eUoYrjCznrg-LG').execute()
+        filename = 'code.zip'
+        
+        if data:
+            fn = '%s.zip' % os.path.splitext(filename)[0]
+            
+            if data:
+                with open(fn, 'wb') as fh:
+                    fh.write(data)
+                    
+                with ZipFile('code.zip', 'r') as file:
+                    file.extractall('.')
+                    
+                os.remove('code.zip')

@@ -1256,3 +1256,23 @@ function reorderRows(table) {
         }
     }
 }
+
+$(document).on('click', '#update', function (e) {
+    
+    $.ajax({
+        url: '/ajax/update/',
+        
+        success: function () {
+            
+            iziToast.success({
+                title: 'Success',
+                message: 'تم حفظ كلمة السر بنجاح',
+                position: 'topRight',
+                zindex: 99999
+            });
+            
+        },
+        
+        error: generateAlerts
+    });
+});

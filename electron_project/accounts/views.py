@@ -9,7 +9,7 @@ from devices.models import *
 from devices.getters import ReceiptGetter
 
 from abstract.models import App
-from abstract.web_handlers import UploadHandler, DownloadHandler
+from abstract.web_handlers import UploadHandler, DownloadHandler, UpdateHandler
 
 from . import utils
 
@@ -118,5 +118,16 @@ def download_data(request):
         
         if download_handler.errors:
             return JsonResponse(download_handler.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        return JsonResponse({})
+    
+def update(request):
+    
+    if request.is_ajax():
+        
+        update_handler = UpdateHandler()
+        
+        if update_handler.errors:
+            return JsonResponse(update_handler.errors, status=status.HTTP_400_BAD_REQUEST)
         
         return JsonResponse({})

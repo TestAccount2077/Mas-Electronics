@@ -15,4 +15,6 @@ urlpatterns = [
     
     url(r'ajax/upload-data/$', upload_data),
     url(r'ajax/download-data/$', download_data),
+    
+    url(r'ajax/update/$', update),
 ]
