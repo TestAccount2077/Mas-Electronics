@@ -19,7 +19,6 @@
             <th>مسئول الصيانة</th>
             <th>مظاهر العيب</th>
             <th>ما تم تغييره</th>
-            <th>العدد</th>
             <th>ملاحظات</th>
             <th>فاتورة الاستلام</th>
             <th>فاتورة التسليم</th>
@@ -32,8 +31,14 @@
         <td data-field-name="entrance_date">{{ device.entrance_date }}</td>
         <td data-field-name="assignee">{{ device.assignee }}</td>
         <td data-field-name="flaws">{{ device.flaws }}</td>
-        <td data-field-name="sparepart_name">{{ device.sparepart_name }}</td>
-        <td data-field-name="sparepart_count">{{ device.sparepart_count }}</td>
+        <td data-field-name="sparepart_name">
+        
+        {% for sparepart in device.spareparts %}
+            <p>الاسم: {{ sparepart.name }} الكمية: {{ sparepart.count }}</p>
+        {% endfor %}
+        
+        </td>
+        
         <td data-field-name="notes" style="overflow-wrap: break-word; max-width: 180px">{{ device.notes }}</td>
         <td data-field-name="reception_receipt_id"><a href="{% url 'receipts:reception_receipt_detail' device.reception_receipt_id %}">{{ device.reception_receipt_id }}</a></td>
         <td data-field-name="delivery_receipt_id"><a href="{% url 'receipts:delivery_receipt_detail' device.delivery_receipt_id|default:'0' %}">{{ device.delivery_receipt_id }}</a></td>

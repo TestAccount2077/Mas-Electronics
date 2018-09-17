@@ -107,11 +107,14 @@ class MaintenanceDevice(TimeStampedModel):
             'assignee': self.assignee,
             'flaws': self.flaws,
             'notes': self.notes,
+            'spareparts': [sparepart.as_dict() for sparepart in self.spareparts.all()],
             
             'assignee_class': 'editable-locked' if self.assignee else 'maintenance-empty',
             'flaws_class': 'editable-locked' if self.flaws else 'maintenance-empty',
             'notes_class': 'editable-locked' if self.notes else 'maintenance-empty'
         }
+        
+        print(data['spareparts'])
         
         return data
 

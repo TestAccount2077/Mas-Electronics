@@ -61,7 +61,7 @@ def sparepart_inventory_detail(request, pk):
     
     sparepart = Sparepart.objects.get(pk=pk)
     
-    data['devices'] = (device.as_dict() for device in MaintenanceDevice.objects.filter(sparepart__name=sparepart.name))
+    data['devices'] = (device.as_dict() for device in MaintenanceDevice.objects.filter(spareparts__sparepart__name=sparepart.name))
     
     return render(request, 'devices/sparepart-inventory-detail.html', context=data)
 

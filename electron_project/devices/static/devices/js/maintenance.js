@@ -1,4 +1,5 @@
 var devicePk,
+    editedCount,
     currentView = 'maintenance';
 
 $(document).ready(function () {
@@ -321,34 +322,7 @@ function addSparepart() {
             count: count
         },
         
-        success: function (data) {
-            
-            if (data.qty_lt_min) {
-                
-                iziToast.warning({
-                    title: 'تحذير',
-                    message: 'الكمية أقل من الحد الأدنى',
-                    position: 'topRight',
-                    zindex: 99999
-                });
-                
-            }
-            
-            var sparepart = data.sparepart,
-                element = $(`.sparepart-item[data-pk=${ sparepart.id }]`);
-            
-            if (element.length) {
-                element.children(':first').children(':nth-child(4)').text(sparepart.count);
-            }
-            
-            else {
-                
-                var element = composeSparepartElement(sparepart);
-                
-                $('#sparepart-container').append(element);
-                
-            }
-        },
+        success: addItemSuccess,
         
         error: generateAlerts
     });
@@ -379,6 +353,48 @@ $(document).on('click', '.sparepart-delete', function (e) {
     
 });
 
+$(document).on('click', '.sparepart-inner-edit', function (e) {
+    
+    var element = $(this);
+    
+    if (element.text() === 'تعديل') {
+        
+        element.text('تأكيد')
+            .prev().prev()
+            .attr('contenteditable', true)
+            .focus();
+        
+        editedCount = element.prev().prev().text();
+        
+        $('.sparepart-inner-edit').not(element).prop('disabled', true);
+    }
+    
+    else {
+        
+        element.text('تعديل');
+        
+        var sparepart = element.prev().prev().prev().prev().text(),
+            count = element.prev().prev().text();
+        
+        if (count && !count === editedCount) {
+            
+            count = Number.parseInt(count) - Number.parseInt(editedCount);
+            
+            $.ajax({
+                url: 'ajax/add-sparepart-item/',
+                
+                data: {
+                    devicePk: devicePk,
+                    sparepart: sparepart,
+                    count: count
+                },
+                
+                success: addItemSuccess
+            });
+        }
+    }
+});
+
 function composeSparepartElement(sparepart) {
     
     return `
@@ -387,8 +403,38 @@ function composeSparepartElement(sparepart) {
                 <strong>&bull; اسم القطعة: </strong><span dir="ltr">${ sparepart.name }</span>
                 <strong>الكمية</strong>: <span>${ sparepart.count }</span>
                 <a href="#" style="float:left; margin-right:10px" class="sparepart-delete">حذف</a>
-                <a href="#" style="float:left">تعديل</a>
+                <a href="#" style="float:left" class="sparepart-inner-edit">تعديل</a>
             </h3>
         </div>`;
+    
+}
+
+function addItemSuccess(data) {
+    
+    if (data.qty_lt_min) {
+
+        iziToast.warning({
+            title: 'تحذير',
+            message: 'الكمية أقل من الحد الأدنى',
+            position: 'topRight',
+            zindex: 99999
+        });
+
+    }
+
+    var sparepart = data.sparepart,
+        element = $(`.sparepart-item[data-pk=${ sparepart.id }]`);
+
+    if (element.length) {
+        element.children(':first').children(':nth-child(4)').text(sparepart.count);
+    }
+
+    else {
+
+        var element = composeSparepartElement(sparepart);
+
+        $('#sparepart-container').append(element);
+
+    }
     
 }
