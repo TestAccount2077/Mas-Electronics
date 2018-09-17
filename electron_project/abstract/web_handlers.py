@@ -9,20 +9,20 @@ from zipfile import ZipFile
 class UploadHandler(object):
     
     errors = {}
-    filename = 'db.sqlite3'
+    filename = 'electron_project/db.sqlite3'
     
     def __init__(self):
         
         flags = None
             
         SCOPES = 'https://www.googleapis.com/auth/drive.file'
-        store = file.Storage('storage.json')
+        store = file.Storage('electron_project/storage.json')
         creds = store.get()
         
         if not creds or creds.invalid:
             
             flow = client.flow_from_clientsecrets(
-                'client_secret.json', scope=SCOPES
+                'electron_project/client_secret.json', scope=SCOPES
             )
             
             if flags:
@@ -67,13 +67,13 @@ class DownloadHandler(object):
         flags = None
         
         SCOPES = 'https://www.googleapis.com/auth/drive.file'
-        store = file.Storage('storage.json')
+        store = file.Storage('electron_project/storage.json')
         creds = store.get()
 
         if not creds or creds.invalid:
             
             flow = client.flow_from_clientsecrets(
-                'client_secret.json', scope=SCOPES
+                'electron_project/client_secret.json', scope=SCOPES
             )
 
             if flags:
@@ -114,13 +114,13 @@ class UpdateHandler(object):
         flags = None
         
         SCOPES = 'https://www.googleapis.com/auth/drive.file'
-        store = file.Storage('storage.json')
+        store = file.Storage('electron_project/storage.json')
         creds = store.get()
 
         if not creds or creds.invalid:
             
             flow = client.flow_from_clientsecrets(
-                'client_secret.json', scope=SCOPES
+                'electron_project/client_secret.json', scope=SCOPES
             )
 
             if flags:
