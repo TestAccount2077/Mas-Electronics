@@ -1266,7 +1266,7 @@ $(document).on('click', '#update', function (e) {
             
             iziToast.success({
                 title: 'Success',
-                message: 'تم حفظ كلمة السر بنجاح',
+                message: 'تم التحديث بنجاح. يرجى اعادة تشغيل البرنامج',
                 position: 'topRight',
                 zindex: 99999
             });

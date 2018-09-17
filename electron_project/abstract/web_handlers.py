@@ -4,6 +4,7 @@ from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 from zipfile import ZipFile
+from subprocess import call
 
 
 class UploadHandler(object):
@@ -151,3 +152,9 @@ class UpdateHandler(object):
                     file.extractall('.')
                     
                 os.remove('code.zip')
+                
+        self.run_migration_commands()
+                
+    def run_migration_commands(self):
+        
+        call(['python', 'electron_project/manage.py', 'migrate'], shell=True)
