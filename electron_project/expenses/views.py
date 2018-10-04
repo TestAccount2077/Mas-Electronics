@@ -62,10 +62,18 @@ def create_expense(request):
         expense_obj.total_after_change = app.current_balance
         expense_obj.save()
         
-        return JsonResponse({
+        context = {
             'expense': expense_obj.as_dict(),
             'current_balance': app.current_balance
-        })
+        }
+        
+        daily_expense = DailyExpense.objects.get(date=expense_obj.date)
+        
+        if daily_expense.closed:
+            daily_expense = utils.close_account()
+            context['daily_expense'] = daily_expense.as_dict(include_closing_data=True)
+        
+        return JsonResponse(context)
     
 def delete_expense(request):
     
@@ -97,12 +105,20 @@ def delete_expense(request):
             app.current_balance -= expense.balance_change
             app.save()
         
-        expense.delete()
-        
-        return JsonResponse({
+        context = {
             'totals': totals,
             'current_balance': app.current_balance
-        })
+        }
+        
+        daily_expense = DailyExpense.objects.get(date=expense.date)
+        
+        expense.delete()
+        
+        if daily_expense.closed:
+            daily_expense = utils.close_account()
+            context['daily_expense'] = daily_expense.as_dict(include_closing_data=True)
+                
+        return JsonResponse(context)
 
 @csrf_exempt
 def filter_expenses(request):
@@ -170,14 +186,7 @@ def close_account(request):
     
     if request.is_ajax():
         
-        daily_expense = DailyExpense.objects.get(date=timezone.now().date())
-        
-        app = App.objects.first()
-        
-        daily_expense.closing_balance = app.current_balance
-        daily_expense.closing_time = timezone.now()
-        daily_expense.closed = True
-        daily_expense.save()
+        daily_expense = utils.close_account()
         
         return JsonResponse(daily_expense.as_dict(include_closing_data=True))
     

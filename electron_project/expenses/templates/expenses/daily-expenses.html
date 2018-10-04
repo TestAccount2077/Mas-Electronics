@@ -62,12 +62,12 @@
             {% if daily_expense.closed %}
             <td id="todays-total-expenses" class="expense-td">{{ daily_expense.total_expenses }}</td>
             <td id="todays-total-revenue" class="revenue-td">{{ daily_expense.total_revenue }}</td>
-            <td id="todays-closing-time">{{ daily_expense.closing_time }}</td>
+            <td id="todays-closing-time" dir="ltr">{{ daily_expense.closing_time }}</td>
             <td id="todays-closing-total">{{ daily_expense.closing_balance }}</td>
             {% else %}
             <td id="todays-total-expenses"></td>
             <td id="todays-total-revenue"></td>
-            <td id="todays-closing-time"></td>
+            <td id="todays-closing-time" dir="ltr"></td>
             <td id="todays-closing-total"></td>
             {% endif %}
         </tr>

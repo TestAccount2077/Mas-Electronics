@@ -48,3 +48,16 @@ def close_old_days():
                 expense.closing_balance = app.current_balance
             
             expense.save()
+            
+def close_account():
+    
+    daily_expense = DailyExpense.objects.get(date=timezone.now().date())
+    
+    app = App.objects.first()
+    
+    daily_expense.closing_balance = app.current_balance
+    daily_expense.closing_time = timezone.now()
+    daily_expense.closed = True
+    daily_expense.save()
+    
+    return daily_expense

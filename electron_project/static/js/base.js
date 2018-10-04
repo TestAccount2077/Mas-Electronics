@@ -1133,6 +1133,10 @@ $(document).on('focusout', '.editable-unlocked', function (e) {
                     $("#todays-closing-total").text(data.daily_expense.closing_balance);
 
                 }
+                
+                if (data.daily_expense) {
+                    updateClosingTable(data.daily_expense);
+                }
 
             }
         },

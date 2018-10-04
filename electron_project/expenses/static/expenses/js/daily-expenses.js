@@ -123,6 +123,10 @@ $(document).on('keypress', '#daily-expenses-table tbody tr:last td.empty:nth-chi
                                 '<td class="editable-locked empty" data-field-name="total_after_change" data-input-type="number"></td>' +
                                 '<td></td></tr>'
                 );
+                
+                if (data.daily_expense) {
+                    updateClosingTable(data.daily_expense);
+                }
             },
             
             error: function (error) {
@@ -185,6 +189,10 @@ $(document).on('click', '.remove-expense-item', function (e) {
                     reorderTableCounters('#daily-expenses-table tbody tr:not(:last)');
                 }, 500);
                 
+                if (data.daily_expense) {
+                    updateClosingTable(data.daily_expense);
+                }
+                
             },
             
             error: generateAlerts
@@ -212,11 +220,8 @@ $(document).on('keypress', '.filter-expense, .filter-revenue', function (e) {
 $(document).on('click', '#close-account', function (e) {
     
     $.ajax({
-        url: 'expenses/ajax/close-account/',
         
-        data: {
-            
-        },
+        url: 'expenses/ajax/close-account/',
         
         success: function (data) {
             
@@ -230,3 +235,12 @@ $(document).on('click', '#close-account', function (e) {
         
     });
 });
+
+function updateClosingTable(expense) {
+    
+    $('#todays-total-expenses').text(expense.total_expenses);
+    $('#todays-total-revenue').text(expense.total_revenue);
+    $('#todays-closing-time').text(expense.closing_time);
+    $('#todays-closing-total').text(expense.closing_balance);
+    
+}

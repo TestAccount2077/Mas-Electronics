@@ -2,13 +2,18 @@ import os
 import shutil
 import zipfile
 
-# Deleting package folder if it exists
-if os.path.exists('package'):
-    shutil.rmtree('package')
+# Asking user if he wants to remove current package
+delete_old_package = input('Delete old package? (y/n) ')
 
-# Creating package folder
-os.mkdir('package')
-os.mkdir('package/electron_project')
+if delete_old_package == 'y':
+
+    # Deleting old package folder if it exists
+    if os.path.exists('package'):
+        shutil.rmtree('package')
+
+    # Creating new package folder
+    os.mkdir('package')
+    os.mkdir('package/electron_project')
 
 # Asking user for files to be packaged
 paths = []
@@ -43,3 +48,7 @@ for path in paths:
 # Zipping package
 os.chdir('package')
 shutil.make_archive('code', 'zip', base_dir='electron_project')
+
+while True:
+    input('Done. Press Enter to Exit.')
+    break

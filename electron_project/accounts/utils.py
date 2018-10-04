@@ -168,6 +168,10 @@ def update_cell_content(pk, item_type, field_name, content):
             changes['new_totals'] = expense.get_new_totals(old_balance_change)
             
             changes['current_balance'], daily_expense = expenses_utils.update_daily_expense()
+            
+            if daily_expense.closed:
+                daily_expense = expenses_utils.close_account()
+            
             changes['daily_expense'] = daily_expense.as_dict(include_closing_data=True)
             
         elif field_name == 'description':
