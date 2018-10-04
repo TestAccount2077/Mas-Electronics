@@ -1238,7 +1238,7 @@ $(document).on('click', '#confirm-new-password-btn', function (e) {
     });
 });
 
-//startTimer();
+startTimer();
 
 function reorderRows(table) {
     
@@ -1258,6 +1258,13 @@ function reorderRows(table) {
 }
 
 $(document).on('click', '#update', function (e) {
+    
+    iziToast.info({
+        title: '',
+        message: 'جار التحديث',
+        position: 'topRight',
+        zindex: 99999
+    });
     
     $.ajax({
         url: '/ajax/update/',

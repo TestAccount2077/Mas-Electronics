@@ -4,7 +4,7 @@ from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 from zipfile import ZipFile
-from subprocess import call
+from subprocess import Popen
 
 
 class UploadHandler(object):
@@ -45,7 +45,7 @@ class UploadHandler(object):
         self.send_file()
     
     def send_file(self):
-                
+        
         metadata = {
             'name': 'new data.zip',
             'mimeType': 'application/x-zip-compressed'
@@ -57,8 +57,8 @@ class UploadHandler(object):
             fileId='1GZN0-gyu8OVumCsxVNgF2OLLFpSteEVT',
             keepRevisionForever=True
         ).execute()
-                
-    
+        
+        
 class DownloadHandler(object):
     
     errors = {}
@@ -157,4 +157,4 @@ class UpdateHandler(object):
                 
     def run_migration_commands(self):
         
-        call(['python', 'electron_project/manage.py', 'migrate'], shell=True)
+        Popen(['python', 'electron_project/manage.py', 'migrate'], shell=True)

@@ -107,7 +107,8 @@ def create_reception_receipt(request):
         
         existing_serials = []
         non_matching_serials = []
-        
+        all_serials = []
+        duplicate_serials =[]        
         errors = {}
         
         for item in receipt_data:
@@ -116,6 +117,11 @@ def create_reception_receipt(request):
             serial_numbers = item['serialNumbers']
             
             for serial in serial_numbers:
+                if serial not in all_serials:
+                    all_serials.append(serial)
+                    
+                elif serial not in duplicate_serials:
+                    duplicate_serials.append(serial)
                 
                 inventory_devices = InventoryDevice.objects.filter(serial_number=serial, deleted=False, delivered=False)
                 archive_devices = ArchiveDevice.objects.filter(inventory_device__serial_number=serial)
@@ -142,10 +148,18 @@ def create_reception_receipt(request):
             
             non_matching_serials_message = 'الأرقام التالية موجودة فى الأرشيف ببيانات مختلفة:<br>'
             
-            for index, serial in enumerate(non_matching_serials):
+            for serial in non_matching_serials:
                 non_matching_serials_message += '- {}<br>'.format(serial)
                 
             errors['non_matching_serials_message'] = non_matching_serials_message
+            
+        if duplicate_serials:
+            duplicate_serials_message = 'الارقام التالية مكررة: <br>'
+            
+            for serial in duplicate_serials:
+                duplicate_serials_message += '- {}<br>'.format(serial)
+                
+            errors['duplicate_serials_message'] = duplicate_serials_message
             
         if errors:
             return JsonResponse(errors, status=status.HTTP_400_BAD_REQUEST)
@@ -170,7 +184,7 @@ def create_reception_receipt(request):
                 inventory_device = reception_receipt.devices.create(
                     serial_number=serial,
                     device_type=device_type,
-                    entrance_date=timezone.now()
+                    entrance_date=date
                 )
                 
                 devices.append(inventory_device.as_dict())
@@ -273,7 +287,7 @@ def create_delivery_receipt(request):
                 
                 archive_device = delivery_receipt.devices.create(                    
                     inventory_device = inventory_device,
-                    leave_date=timezone.now()
+                    leave_date=date
                 )
                 
                 devices.append(archive_device.as_dict())

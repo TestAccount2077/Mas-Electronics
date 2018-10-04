@@ -24,7 +24,8 @@ $(document).ready(function () {
     
     if (rowData) {
         $.each(rowData, function (type, data) {
-
+            
+            var firstRow = currentRow;
             currentRow.children(':nth-child(2)').text(data.count);
             currentRow.children(':nth-child(3)').text(type);
 
@@ -34,7 +35,7 @@ $(document).ready(function () {
 
                 currentInputCount++;
 
-                var input = '<input type="text" class="new-' + receiptType + '-receipt-input" data-associated-with="' + currentRowNumber + '" value="' + serial + '">';
+                var input = '<input type="text" class="new-' + receiptType + '-receipt-input" data-associated-with="' + firstRow.data('row') + '" value="' + serial + '">';
 
                 if (currentInputCount === 4) {
                     currentInputCount = 1;

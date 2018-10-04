@@ -90,9 +90,12 @@ def device_detail(request, serial_number):
     
     inventory_devices = InventoryDevice.objects.filter(serial_number=serial_number, deleted=False)
     inventory_device = inventory_devices.first()
-
+    
+    if not inventory_device:
+        inventory_device = InventoryDevice.objects.filter(serial_number=serial_number).first()
+        
     company_name = inventory_device.reception_receipt.company_name
-    device_type = inventory_device.device_type
+    device_type = inventory_device.device_type        
 
     all_devices = [device.as_dict(for_detail=True) for device in inventory_devices]
     

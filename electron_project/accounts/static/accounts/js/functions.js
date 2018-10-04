@@ -234,7 +234,8 @@ function prepareTableForPrint(tableCount, printedBody, pageNumberElement, curren
     
     if (type === 'receipt') {
         
-        var date = new Date(),
+        var rowCount = 14,
+            date = new Date(),
             date = ' ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
         
         $('#receipt-type-label').text(data.typeLabel);
@@ -251,7 +252,8 @@ function prepareTableForPrint(tableCount, printedBody, pageNumberElement, curren
     
     else {
         
-        var date = new Date(),
+        var rowCount = 20,
+            date = new Date(),
             date = ' ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
         
         $('.reprs-section, .print-section-footer').hide();
@@ -279,7 +281,7 @@ function prepareTableForPrint(tableCount, printedBody, pageNumberElement, curren
         
         pageNumberElement.text('(' + i + ')');
         
-        for (var row=currentRow; row <= currentTable * 20; row++) {
+        for (var row=currentRow; row <= currentTable * rowCount; row++) {
             
             var originalTableRow = body.children(':nth-child(' + currentRow + ')');
             
@@ -314,7 +316,7 @@ function startTimer() {
         
         var date = new Date();
         
-        if (date.getHours() === 12 && !noonUploadDone) {
+        if (date.getMinutes() === 0) {
             
             if (navigator.onLine) {
                 
@@ -354,58 +356,7 @@ function startTimer() {
                     position: 'topRight',
                     zindex: 99999
                 });
-                
-            }
-            
-            noonUploadDone = true;
-            
-        }
-        
-        if (date.getHours() === 16 && !closingUploadDone) {
-            
-            if (navigator.onLine) {
-                
-                iziToast.info({
-                    title: '',
-                    message: 'جار رفع البيانات',
-                    position: 'topRight',
-                    zindex: 99999
-                });
-                
-                $.ajax({
-                    url: '/ajax/upload-data/',
-                    
-                    success: function (data) {
-                        
-                        iziToast.success({
-                            title: 'Success',
-                            message: 'تم رفع البيانات بنجاح',
-                            position: 'topRight',
-                            zindex: 99999
-                        });
-                        
-                    },
-                    
-                    error: function (error) {
-                        
-                        generateAlerts(error);
-                        
-                    }
-                });
-                
-            } else {
-            
-                iziToast.error({
-                    title: 'خطأ',
-                    message: 'تعذر رفع البيانات. لا يتوفر اتصال بالانترنت',
-                    position: 'topRight',
-                    zindex: 99999
-                });
-
-            }
-            
-            closingUploadDone = true;
-            
+            }            
         }
         
     }, 60000);
