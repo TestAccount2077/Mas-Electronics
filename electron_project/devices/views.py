@@ -69,20 +69,25 @@ def device_archive_view(request):
     
     data = get_abstract_data()
     
-    archive_qs = ArchiveDevice.objects.filter(deleted=False)
-    
-    archive_devices = []
-    
-    for device in archive_qs:
-        
-        last_device = archive_qs.filter(inventory_device__serial_number=device.inventory_device.serial_number).last()
-        
-        if last_device not in archive_devices:
-            archive_devices.append(last_device)
-    
-    data['archive_devices'] = (device.as_dict() for device in archive_devices)
-    
     return render(request, 'devices/device-archive.html', context=data)
+
+def get_device_archive_data(request):
+    
+    if request.is_ajax():
+        
+        archive_qs = ArchiveDevice.objects.filter(deleted=False)
+
+        archive_devices = []
+
+        for device in archive_qs:
+            last_device = archive_qs.filter(inventory_device__serial_number=device.inventory_device.serial_number).last()
+
+            if last_device not in archive_devices:
+                archive_devices.append(last_device)
+        
+        return JsonResponse({
+            'archive_devices': [device.as_dict() for device in archive_devices]
+        })
 
 def device_detail(request, serial_number):
     
@@ -95,7 +100,7 @@ def device_detail(request, serial_number):
         inventory_device = InventoryDevice.objects.filter(serial_number=serial_number).first()
         
     company_name = inventory_device.reception_receipt.company_name
-    device_type = inventory_device.device_type        
+    device_type = inventory_device.device_type
 
     all_devices = [device.as_dict(for_detail=True) for device in inventory_devices]
     

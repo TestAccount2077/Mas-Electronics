@@ -29,6 +29,8 @@ urlpatterns = [
     url(r'ajax/filter-sparepart-inventory/$', filter_sparepart_inventory),
     url(r'ajax/filter-device-archive/$', filter_device_archive),
     
+    url(r'ajax/get-device-archive-data/$', get_device_archive_data),
+    
     url(r'ajax/get-autocomplete-data/$', get_autocomplete_data),
     
     url(r'ajax/total-filter/$', total_filter),
