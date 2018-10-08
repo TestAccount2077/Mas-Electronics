@@ -1,3 +1,22 @@
+const socket = new WebSocket('wss://qwepoiasdkljxcmv.herokuapp.com/MAS/ws/maintenance-connection/');
+
+$(document).ready(function () {
+    
+    socket.onmessage = function (data) {
+        
+        var data = JSON.parse(data.data);
+            data = JSON.parse(data.data);
+        
+        createMaintenanceDevice(data.device.serial_number, data.device.assignee);
+        
+    }
+    
+    socket.onerror = function (error) {
+        console.log(error);
+    }
+    
+});
+
 var currentValue,
     password,
     pendingToUnlockElement,
@@ -1287,3 +1306,31 @@ $(document).on('click', '#update', function (e) {
         error: generateAlerts
     });
 });
+
+function createMaintenanceDevice (serialNumber, assignee) {
+    
+    if (currentView === 'maintenance') {
+        
+        $('#maintenance-serial-input')
+            .focus()
+            .val(serialNumber);
+        
+        $('#maintenance-table tbody tr:last td:nth-child(5)').text(assignee);
+        
+        setTimeout(function () {
+            $('#maintenance-serial-input').blur();
+        }, 1000);
+    }
+    
+    else {
+        $.ajax({
+            url: '/devices/ajax/create-maintenance-device/',
+            
+            data: {
+                serialNumber,
+                assignee
+            }
+            
+        });
+    }
+}

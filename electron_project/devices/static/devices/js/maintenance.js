@@ -28,16 +28,24 @@ $(document).on('focusout', '#maintenance-serial-input', function (e) {
     if (!serialNumber) {
         return;
     }
-
+    
+    var data = {
+        serialNumber
+    },
+        
+        assignee = $('#maintenance-table tbody tr:last td:nth-child(5)').text();
+    
+    if (assignee) {
+        data.assignee = assignee;
+    }
+    
     $.ajax({
         url: 'devices/ajax/create-maintenance-device/',
-
-        data: {
-            serialNumber: serialNumber
-        },
-
+        
+        data: data,
+        
         success: function (device) {
-
+            
             var element = $('#maintenance-table tbody tr:last');
             
             cell.parent().removeClass('input-td');
@@ -232,10 +240,6 @@ $(document).on('click', '.remove-maintenance-item', function (e) {
                 parent.fadeOut(300, function () {
                     $(this).remove();
                 });
-                
-                if (data.sparepart) {
-                    $('#sparepart-inventory-table tbody tr[data-pk=' + data.sparepart.pk + '] td[data-field-name=count]').text(data.sparepart.count);
-                }
                 
                 inventorySerials.push(serialNumber);
             

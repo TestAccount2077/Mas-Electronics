@@ -151,6 +151,7 @@ def create_maintenance_device(request):
     if request.is_ajax():
         
         serial_number = request.GET['serialNumber']
+        assignee = request.GET.get('assignee', '')
         
         maintenance_device = MaintenanceDevice.objects.filter(inventory_device__serial_number=serial_number, deleted=False)
         inventory_device = InventoryDevice.objects.filter(serial_number=serial_number, deleted=False, delivered=False)
@@ -178,7 +179,8 @@ def create_maintenance_device(request):
         inventory_device = inventory_device.first()
         
         maintenance_device = MaintenanceDevice.objects.create(
-            inventory_device=inventory_device
+            inventory_device=inventory_device,
+            assignee=assignee
         )
 
         return JsonResponse(maintenance_device.as_dict())
@@ -186,25 +188,24 @@ def create_maintenance_device(request):
 def remove_maintenance_device(request):
     
     if request.is_ajax():
-                
+        
         device = MaintenanceDevice.objects.get(pk=request.GET['pk'])
         
         context = {}
         
-        if device.sparepart and device.sparepart_count:
+        if device.spareparts.exists():
             
-            sparepart = device.sparepart
-            
-            sparepart.count += device.sparepart_count
-            sparepart.save()
-            
-            context['sparepart'] = sparepart.as_dict()
+            for sparepart_relation in device.spareparts.all():
+                
+                sparepart = sparepart_relation.sparepart
+                
+                sparepart.count += sparepart_relation.count
+                sparepart.save()
         
         device.delete()
         
         return JsonResponse(context)
 
-    
 def add_sparepart_item(request):
     
     if request.is_ajax():
