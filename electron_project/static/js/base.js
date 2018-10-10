@@ -7,8 +7,21 @@ $(document).ready(function () {
         var data = JSON.parse(data.data);
             data = JSON.parse(data.data);
         
-        createMaintenanceDevice(data.device.serial_number, data.device.assignee);
-        
+        if (data.sender === 'maintenance') {
+            
+            if (data.action === 'create') {
+                createMaintenanceDevice(data.device.serial_number, data.device.assignee);
+            }
+            
+            else if (data.action ==='update') {
+                updateMaintenanceDevice(data.device);
+            }
+            
+            else if (data.action === 'delete') {
+                removeMaintenanceDevice(data.device);
+            }
+            
+        }
     }
     
     socket.onerror = function (error) {
