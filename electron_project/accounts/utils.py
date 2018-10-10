@@ -2,7 +2,7 @@ from devices.models import *
 from expenses.models import *
 from expenses import utils as expenses_utils
 
-def update_cell_content(pk, item_type, field_name, content):
+def update_cell_content(pk, serial, item_type, field_name, content):
     
     changes = {}
     
@@ -10,8 +10,12 @@ def update_cell_content(pk, item_type, field_name, content):
         
         inventory_device_fields = ('serial_number', 'company_name', 'device_type', 'entrance_date')
         
-        device = MaintenanceDevice.objects.filter(pk=pk)
+        if pk:
+            device = MaintenanceDevice.objects.filter(pk=pk)
         
+        elif serial:
+            device = MaintenanceDevice.objects.filter(inventory_device__serial_number=serial, deleted=False)
+            
         if field_name in inventory_device_fields:
             
             data = {

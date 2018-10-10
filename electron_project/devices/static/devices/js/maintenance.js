@@ -46,6 +46,8 @@ $(document).on('focusout', '#maintenance-serial-input', function (e) {
         
         success: function (device) {
             
+            devicesAndSpareparts[device.pk] = [];
+            
             var element = $('#maintenance-table tbody tr:last');
             
             cell.parent().removeClass('input-td');

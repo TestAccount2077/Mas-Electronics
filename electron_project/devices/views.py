@@ -189,7 +189,20 @@ def remove_maintenance_device(request):
     
     if request.is_ajax():
         
-        device = MaintenanceDevice.objects.get(pk=request.GET['pk'])
+        data = request.GET
+        
+        pk = data.get('pk', None)
+        serial = data.get('serial', None)
+        
+        if pk:
+            device = MaintenanceDevice.objects.get(pk=pk)
+            
+        elif serial:
+            
+            device = MaintenanceDevice.objects.get(
+                inventory_device__serial_number=serial,
+                inventory_device__delivered=False
+            )
         
         context = {}
         

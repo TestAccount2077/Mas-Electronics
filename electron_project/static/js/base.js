@@ -1,11 +1,13 @@
-const socket = new WebSocket('wss://qwepoiasdkljxcmv.herokuapp.com/MAS/ws/maintenance-connection/');
+const socket = new ReconnectingWebSocket('wss://qwepoiasdkljxcmv.herokuapp.com/MAS/ws/maintenance-connection/');
 
 $(document).ready(function () {
     
     socket.onmessage = function (data) {
         
-        var data = JSON.parse(data.data);
+        var data = JSON.parse(data.data),
             data = JSON.parse(data.data);
+        
+        console.log(data);
         
         if (data.sender === 'maintenance') {
             
@@ -14,14 +16,33 @@ $(document).ready(function () {
             }
             
             else if (data.action ==='update') {
-                updateMaintenanceDevice(data.device);
+                updateMaintenanceDevice(data.data);
             }
             
             else if (data.action === 'delete') {
-                removeMaintenanceDevice(data.device);
+                removeMaintenanceDevice(data.serialNumber);
             }
             
         }
+    }
+    
+    socket.onconnecting = function () {
+        
+        $('#connection-dot').css('background-color', 'yellow');
+        $('#connection-label').text('جار الاتصال');
+        
+    }
+    
+    socket.onopen = function () {
+        
+        $('#connection-dot').css('background-color', '#2ca831');
+        $('#connection-label').text('متصل');
+        
+    }
+    
+    socket.onclose = function (error) {
+        $('#connection-dot').css('background-color', 'red');
+        $('#connection-label').text('غير متصل');
     }
     
     socket.onerror = function (error) {
@@ -1069,8 +1090,8 @@ $(document).on('focusout', '.editable-unlocked', function (e) {
         data: {
             pk: cell.parent().attr('data-pk'),
             type: itemType,
-            fieldName: fieldName,
-            content: content
+            fieldName,
+            content
         },
 
         success: function (data) {
@@ -1346,4 +1367,45 @@ function createMaintenanceDevice (serialNumber, assignee) {
             
         });
     }
+}
+
+function updateMaintenanceDevice(Data) {
+    
+    $.ajax({
+        url: '/ajax/update-cell-content/',
+        
+        data: {
+            serial: Data.serial,
+            type: 'maintenance',
+            fieldName: Data.fieldName,
+            content: Data.content
+        },
+        
+        success: function (data) {
+            
+            if (currentView === 'maintenance') {
+                $(`#maintenance-table tbody tr[data-serial="${ Data.serial }"]`).children(`td[data-field-name=${ Data.fieldName }]`).text(Data.content);
+            }
+        }
+    });
+}
+
+function removeMaintenanceDevice(serial) {
+    
+    $.ajax({
+        url: '/devices/ajax/remove-maintenance-device/',
+        
+        data: {
+            serial
+        },
+        
+        success: function (data) {
+            
+            if (currentView === 'maintenance') {
+                $(`#maintenance-table tbody tr[data-serial="${ serial }"]`).remove();
+            }
+            
+        }
+    });
+    
 }

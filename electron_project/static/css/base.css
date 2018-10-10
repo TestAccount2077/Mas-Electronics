@@ -138,3 +138,20 @@ td.attendance-td {
 .revenue-td {
     color: limegreen
 }
+
+#maintenance-table {
+    margin-bottom: 20vh;
+}
+
+#connection-container {
+    display: inline-block;
+    margin: 15px;
+}
+
+#connection-dot {
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    background: red;
+    display: inline-block;
+}
