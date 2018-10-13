@@ -23,6 +23,14 @@ $(document).ready(function () {
                 removeMaintenanceDevice(data.serialNumber);
             }
             
+            else if (data.action === 'add-sparepart') {
+                AddSparepart(data.data);
+            }
+            
+            else if (data.action == 'remove-sparepart') {
+                removeSparepart(data.data);
+            }
+            
         }
     }
     
@@ -1408,4 +1416,58 @@ function removeMaintenanceDevice(serial) {
         }
     });
     
+}
+
+function AddSparepart(Data) {
+    
+    $.ajax({
+        
+        url: '/devices/ajax/add-sparepart-item/',
+        
+        data: {
+            serial: Data.serial,
+            sparepart: Data.sparepart,
+            count: Data.count
+        },
+        
+        success: function (data) {
+            
+            if (currentView === 'maintenance') {
+                devicesAndSpareparts[data.pk] = data.spareparts;
+            }
+            
+            iziToast.info({
+                title: 'معلومات',
+                message: `تم تحديث قطع الغيار فى الجهاز ${ Data.serial }`,
+                position: 'topRight',
+                zindex: 99999
+            });
+            
+        }
+    });
+}
+
+function removeSparepart (Data) {
+    
+    $.ajax({
+        
+        url: '/devices/ajax/remove-sparepart-item/',
+        
+        data: Data,
+        
+        success: function (data) {
+            
+            if (currentView === 'maintenance') {
+                devicesAndSpareparts[data.pk] = data.spareparts;
+            }
+            
+            iziToast.info({
+                title: 'معلومات',
+                message: `تم تحديث قطع الغيار فى الجهاز ${ Data.serial }`,
+                position: 'topRight',
+                zindex: 99999
+            });
+            
+        }
+    });
 }

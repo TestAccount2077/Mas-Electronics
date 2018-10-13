@@ -323,9 +323,9 @@ function addSparepart() {
         url: 'ajax/add-sparepart-item/',
         
         data: {
-            devicePk: devicePk,
-            sparepart: sparepart,
-            count: count
+            devicePk,
+            sparepart,
+            count
         },
         
         success: addItemSuccess,
@@ -416,6 +416,8 @@ function composeSparepartElement(sparepart) {
 }
 
 function addItemSuccess(data) {
+    
+    devicesAndSpareparts[data.pk] = data.spareparts;
     
     if (data.qty_lt_min) {
 

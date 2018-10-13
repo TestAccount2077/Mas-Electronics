@@ -1,6 +1,8 @@
 import os
 import shutil
 import zipfile
+import tkinter as tk
+from tkinter import filedialog
 
 # Asking user if he wants to remove current package
 delete_old_package = input('Delete old package? (y/n) ')
@@ -19,10 +21,14 @@ if delete_old_package == 'y':
 paths = []
 
 while True:
-    path = input('Path: ')
+    
+    root = tk.Tk()
+    root.withdraw()
+    
+    path = filedialog.askopenfilename()
 
     if path:
-        paths.append(path)
+        paths.append(os.path.relpath(path).replace('\\', '/'))
 
     else:
         break

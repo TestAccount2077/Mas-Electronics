@@ -228,7 +228,21 @@ def add_sparepart_item(request):
         name = data['sparepart']
         count = int(data['count'])
         
-        device = MaintenanceDevice.objects.get(pk=data['devicePk'])
+        pk = data.get('devicePk', None)
+        serial = data.get('serial', None)
+        
+        if pk:
+            device = MaintenanceDevice.objects.get(pk=pk)
+            
+        elif serial:
+            
+            device = MaintenanceDevice.objects.get(
+                inventory_device__serial_number=serial,
+                inventory_device__delivered=False
+            )
+            
+            pk = device.pk
+            
         sparepart = Sparepart.objects.get(name=name)
         
         if sparepart.count - count < 0:
@@ -253,7 +267,9 @@ def add_sparepart_item(request):
         sparepart.save()
         
         context = {
-            'sparepart': sparepart_relation.as_dict()
+            'sparepart': sparepart_relation.as_dict(),
+            'spareparts': [relation.as_dict() for relation in device.spareparts.all()],
+            'pk': pk
         }
         
         if sparepart.count < sparepart.minimum_qty:
@@ -265,7 +281,26 @@ def remove_sparepart_item(request):
     
     if request.is_ajax():
         
-        relation = DeviceSparepartRelation.objects.get(pk=request.GET['pk'])
+        data = request.GET
+        pk = data.get('pk', None)
+        device_pk = data.get('devicePk', None)
+        
+        if pk:
+            relation = DeviceSparepartRelation.objects.get(pk=pk)
+            device = MaintenanceDevice.objects.get(pk=device_pk)
+            
+        else:
+            name = data['sparepartName']
+            
+            device = MaintenanceDevice.objects.get(
+                inventory_device__serial_number=data['serial'],
+                inventory_device__delivered=False
+            )
+            
+            relation = DeviceSparepartRelation.objects.get(
+                sparepart__name=name,
+                device=device
+            )
         
         sparepart = relation.sparepart
         
@@ -274,9 +309,8 @@ def remove_sparepart_item(request):
         
         relation.delete()
         
-        device = MaintenanceDevice.objects.get(pk=request.GET['devicePk'])
-        
         return JsonResponse({
+            'pk': device.pk,
             'spareparts': [sparepart.as_dict() for sparepart in device.spareparts.all()]
         })
 
