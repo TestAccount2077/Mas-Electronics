@@ -70,7 +70,7 @@ $(document).on('click', '.receipt-save', function (e) {
         
         emptyInputs = 0,
         emptyRows = 0,
-        data = [],
+        Data = [],
         idLabel,
         typeLabel,
         idHolder,
@@ -142,7 +142,7 @@ $(document).on('click', '.receipt-save', function (e) {
                 
                 rowData.serialNumbers = serialNumbers;
                 
-                data.push(rowData);
+                Data.push(rowData);
                                 
             } else {
                 
@@ -193,14 +193,14 @@ $(document).on('click', '.receipt-save', function (e) {
         $('#outer-repr-label').text(outerReprInput.val());
         
         if (prefix === 'new-reception-receipt') {
-            ajaxUrl = 'receipts/ajax/create-reception-receipt/';
+            ajaxUrl = '/receipts/ajax/create-reception-receipt/';
             idLabel = $('#new-reception-id-label');
             idHolder = currentReceptionId;
             typeLabel = 'اذن استلام';
         }
 
         else {
-            ajaxUrl = 'receipts/ajax/create-delivery-receipt/';
+            ajaxUrl = '/receipts/ajax/create-delivery-receipt/';
             idLabel = $('#new-delivery-id-label');
             idHolder = currentDeliveryId;
             typeLabel = 'اذن تسليم';
@@ -216,7 +216,7 @@ $(document).on('click', '.receipt-save', function (e) {
             type: 'POST',
             
             data: {
-                data: JSON.stringify(data),
+                data: JSON.stringify(Data),
                 company: company,
                 date: date,
                 innerRepresentative: innerRepresentative,
@@ -302,6 +302,22 @@ $(document).on('click', '.receipt-save', function (e) {
                     position: 'topRight',
                     zindex: 99999
                 });
+                
+                socket.send(JSON.stringify({
+                    
+                    sender: 'admin-new-receipt',
+                    url: ajaxUrl,
+                    
+                    data: {
+                        data: JSON.stringify(Data),
+                        company: company,
+                        date: date,
+                        innerRepresentative: innerRepresentative,
+                        outerRepresentative: outerRepresentative
+                    },
+                    
+                }));
+                
             },
             
             error: function (error) {
