@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'ajax/download-data/$', download_data),
     
     url(r'ajax/update/$', update),
+    url(r'ajax/sync/$', sync),
 ]

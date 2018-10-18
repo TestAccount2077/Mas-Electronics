@@ -209,7 +209,8 @@ $(document).on('click', '.receipt-save', function (e) {
         var company = companyInput.val(),
             date = dateInput.val(),
             innerRepresentative = innerReprInput.val(),
-            outerRepresentative = outerReprInput.val();
+            outerRepresentative = outerReprInput.val(),
+            connected = navigator.onLine;
         
         $.ajax({
             url: ajaxUrl,
@@ -217,10 +218,11 @@ $(document).on('click', '.receipt-save', function (e) {
             
             data: {
                 data: JSON.stringify(Data),
-                company: company,
-                date: date,
-                innerRepresentative: innerRepresentative,
-                outerRepresentative: outerRepresentative
+                company,
+                date,
+                innerRepresentative,
+                outerRepresentative,
+                connected
             },
             
             success: function (data) {

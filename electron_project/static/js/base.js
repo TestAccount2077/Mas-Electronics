@@ -31,12 +31,16 @@ $(document).ready(function () {
                 removeSparepart(data.data);
             }
             
+            else if (data.action === 'sync') {
+                sync(data.data);
+            }
+            
         }
     }
     
     socket.onconnecting = function () {
         
-        $('#connection-dot').css('background-color', 'yellow');
+        $('#connection-dot').css('background-color', 'orange');
         $('#connection-label').text('جار الاتصال');
         
     }
@@ -1349,6 +1353,51 @@ $(document).on('click', '#update', function (e) {
     });
 });
 
+$(document).on('click', '#sync', function (e) {
+    
+    if (navigator.onLine) {
+        
+        $.ajax({
+
+            url: '/ajax/sync/',
+
+            success: function (data) {
+
+                socket.send(JSON.stringify({
+
+                    sender: 'admin',
+                    action: 'sync',
+
+                    data: {
+                        receptionReceipts: data.reception_receipts,
+                        deliveryReceipts: data.delivery_receipts
+                    }
+
+                }));
+                
+                iziToast.success({
+                    title: 'نجاح',
+                    message: 'تمت المزامنة بنجاح',
+                    position: 'topRight',
+                    zindex: 99999
+                });
+
+            }
+        });
+        
+    } else {
+        
+        iziToast.error({
+            title: 'خطأ',
+            message: 'لا يتوفر اتصال بالانترنت',
+            position: 'topRight',
+            zindex: 99999
+        });
+        
+    }
+        
+});
+
 function createMaintenanceDevice (serialNumber, assignee) {
     
     if (currentView === 'maintenance') {
@@ -1470,4 +1519,14 @@ function removeSparepart (Data) {
             
         }
     });
+}
+
+function sync(data) {
+    
+    $.each(data.devices, function (index, device) {
+        setTimeout(function () {
+            createMaintenanceDevice(device.serial_number, device.assignee);
+        }, 2000 * index);
+    });
+    
 }

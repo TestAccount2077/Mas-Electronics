@@ -105,6 +105,8 @@ def create_reception_receipt(request):
         inner_representative = data['innerRepresentative']
         outer_representative = data['outerRepresentative']
         
+        synced = json.loads(data['connected'])
+        
         existing_serials = []
         non_matching_serials = []
         all_serials = []
@@ -168,7 +170,8 @@ def create_reception_receipt(request):
             company_name=company,
             date=date,
             inner_representative=inner_representative,
-            outer_representative=outer_representative
+            outer_representative=outer_representative,
+            synced=synced
         )
         
         devices = []
@@ -223,6 +226,8 @@ def create_delivery_receipt(request):
         inner_representative = data['innerRepresentative']
         outer_representative = data['outerRepresentative']
         
+        synced = json.loads(data['connected'])
+        
         not_existing_serials = []
         
         for item in receipt_data:
@@ -262,7 +267,8 @@ def create_delivery_receipt(request):
             company_name=company,
             date=date,
             inner_representative=inner_representative,
-            outer_representative=outer_representative
+            outer_representative=outer_representative,
+            synced=synced
         )
         
         devices = []

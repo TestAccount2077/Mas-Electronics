@@ -132,3 +132,21 @@ def update(request):
             return JsonResponse(update_handler.errors, status=status.HTTP_400_BAD_REQUEST)
         
         return JsonResponse({})
+
+def sync(request):
+    
+    if request.is_ajax():
+        
+        reception_receipts = ReceptionReceipt.objects.filter(synced=False)
+        delivery_receipts = DeliveryReceipt.objects.filter(synced=False)
+        
+        r_receipts = [receipt.as_sync_dict() for receipt in reception_receipts]
+        d_receipts = [receipt.as_sync_dict() for receipt in delivery_receipts]
+        
+        reception_receipts.update(synced=True)
+        delivery_receipts.update(synced=True)
+        
+        return JsonResponse({
+            'reception_receipts': r_receipts,
+            'delivery_receipts': d_receipts
+        })
