@@ -139,6 +139,8 @@ def update_cell_content(pk, serial, item_type, field_name, content):
         sparepart_qs = Sparepart.objects.filter(pk=pk)
         sparepart = sparepart_qs.first()
         
+        changes['name'] = sparepart.name
+        
         if field_name == 'name':
             sparepart.name = content
             sparepart.save()

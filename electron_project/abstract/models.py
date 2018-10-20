@@ -14,12 +14,6 @@ class TimeStampedModel(models.Model):
         ordering = ('created',)
 
 
-class WorkerAccount(TimeStampedModel):
-    
-    username = models.CharField(max_length=300, unique=True)
-    password = models.CharField(max_length=300, unique=True)
-
-
 class App(models.Model):
     
     password = models.CharField(max_length=255, null=True, blank=True)

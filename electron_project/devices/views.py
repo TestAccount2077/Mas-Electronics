@@ -375,7 +375,9 @@ def delete_sparepart(request):
         sparepart.deleted = True
         sparepart.save()
         
-        return JsonResponse({})
+        return JsonResponse({
+            'name': sparepart.name
+        })
     
 def get_autocomplete_data(request):
     

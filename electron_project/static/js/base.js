@@ -1173,6 +1173,21 @@ $(document).on('focusout', '.editable-unlocked', function (e) {
                 } else {
                     cell.parent().children(':nth-child(4)').removeClass('expense-td');
                 }
+                
+                socket.send(JSON.stringify({
+                    
+                    sender: 'admin',
+                    action: 'update-sparepart-object',
+                    
+                    data: {
+                        name: data.name,
+                        type: 'sparepart',
+                        fieldName,
+                        content
+                    }
+                    
+                }));
+                
             }
 
             else if (itemType === 'expense') {

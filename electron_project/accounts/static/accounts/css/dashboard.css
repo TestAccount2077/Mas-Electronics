@@ -108,9 +108,9 @@ button:disabled {
     overflow: scroll;
 }
 
-*::-webkit-scrollbar { 
+/**::-webkit-scrollbar { 
     display: none; 
-}
+}*/
 
 .print-container {
     height: 620px;

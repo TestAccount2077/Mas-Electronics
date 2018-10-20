@@ -120,6 +120,15 @@ $(document).on('click', '#sparepart-save-btn', function (e) {
             
             row.after(newLastRow);
             
+            socket.send(JSON.stringify({
+                
+                sender: 'admin',
+                action: 'add-sparepart-object',
+                
+                data: sparepart
+                
+            }));
+            
         },
         
         error: generateAlerts
@@ -139,7 +148,7 @@ $(document).on('click', '.remove-sparepart', function (e) {
             url: 'devices/ajax/delete-sparepart/',
             
             data: {
-                pk: pk
+                pk
             },
             
             success: function (data) {
@@ -153,6 +162,17 @@ $(document).on('click', '.remove-sparepart', function (e) {
                 setTimeout(function () {
                     reorderTableCounters('#sparepart-inventory-table tbody tr:not(:last)');
                 }, 500);
+                
+                socket.send(JSON.stringify({
+                    
+                    sender: 'admin',
+                    action: 'delete-sparepart-object',
+                    
+                    data: {
+                        name: data.name
+                    }
+                    
+                }));
                 
             },
             
