@@ -120,14 +120,16 @@ $(document).on('click', '#sparepart-save-btn', function (e) {
             
             row.after(newLastRow);
             
-            socket.send(JSON.stringify({
-                
-                sender: 'admin',
-                action: 'add-sparepart-object',
-                
-                data: sparepart
-                
-            }));
+            if (connected) {
+                socket.send(JSON.stringify({
+
+                    sender: 'admin',
+                    action: 'add-sparepart-object',
+
+                    data: sparepart
+
+                }));
+            }
             
         },
         

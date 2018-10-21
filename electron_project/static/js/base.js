@@ -1,5 +1,7 @@
 const socket = new ReconnectingWebSocket('wss://qwepoiasdkljxcmv.herokuapp.com/MAS/ws/maintenance-connection/');
 
+var connected = false;
+
 $(document).ready(function () {
     
     socket.onmessage = function (data) {
@@ -11,7 +13,53 @@ $(document).ready(function () {
         
         if (data.sender === 'maintenance') {
             
-            if (data.action === 'create') {
+            if (data.action === 'connect') {
+                
+                $('#connection-dot').css('background-color', '#2ca831');
+                $('#connection-label').text('متصل');
+                
+                connected = true;
+                
+                socket.send(JSON.stringify({
+                    sender: 'admin',
+                    action: 'accept-connection'
+                }));
+                
+            }
+
+            else if (data.action === 'accept-connection') {
+
+                $('#connection-dot').css('background-color', '#2ca831');
+                $('#connection-label').text('متصل');
+
+                connected = true;
+
+            }
+            
+            else if (data.action === 'disconnect') {
+
+                $('#connection-dot').css('background-color', 'red');
+                $('#connection-label').text('غير متصل');
+
+                connected = false;
+
+                socket.send(JSON.stringify({
+                    sender: 'admin',
+                    action: 'accept-disconnection'
+                }));
+
+            }
+
+            else if (data.action === 'accept-disconnection') {
+
+                $('#connection-dot').css('background-color', 'red');
+                $('#connection-label').text('غير متصل');
+
+                connected = false;
+
+            }
+            
+            else if (data.action === 'create') {
                 createMaintenanceDevice(data.device.serial_number, data.device.assignee);
             }
             
@@ -47,8 +95,10 @@ $(document).ready(function () {
     
     socket.onopen = function () {
         
-        $('#connection-dot').css('background-color', '#2ca831');
-        $('#connection-label').text('متصل');
+        this.send(JSON.stringify({
+            sender: 'admin',
+            action: 'connect'
+        }));
         
     }
     
@@ -1412,6 +1462,15 @@ $(document).on('click', '#sync', function (e) {
     }
         
 });
+
+window.onbeforeunload = function () {
+    
+    socket.send(JSON.stringify({
+        sender: 'admin',
+        action: 'disconnect'
+    }));
+    
+}
 
 function createMaintenanceDevice (serialNumber, assignee) {
     

@@ -209,8 +209,7 @@ $(document).on('click', '.receipt-save', function (e) {
         var company = companyInput.val(),
             date = dateInput.val(),
             innerRepresentative = innerReprInput.val(),
-            outerRepresentative = outerReprInput.val(),
-            connected = navigator.onLine;
+            outerRepresentative = outerReprInput.val();
         
         $.ajax({
             url: ajaxUrl,
@@ -305,21 +304,23 @@ $(document).on('click', '.receipt-save', function (e) {
                     zindex: 99999
                 });
                 
-                socket.send(JSON.stringify({
+                if (connected) {
                     
-                    sender: 'admin-new-receipt',
-                    url: ajaxUrl,
-                    
-                    data: {
-                        data: JSON.stringify(Data),
-                        company: company,
-                        date: date,
-                        innerRepresentative: innerRepresentative,
-                        outerRepresentative: outerRepresentative
-                    },
-                    
-                }));
-                
+                    socket.send(JSON.stringify({
+
+                        sender: 'admin-new-receipt',
+                        url: ajaxUrl,
+
+                        data: {
+                            data: JSON.stringify(Data),
+                            company: company,
+                            date: date,
+                            innerRepresentative: innerRepresentative,
+                            outerRepresentative: outerRepresentative
+                        },
+
+                    }));
+                }
             },
             
             error: function (error) {
