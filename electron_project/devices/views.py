@@ -170,12 +170,15 @@ def create_maintenance_device(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        if via_sync:
+            receipt_id = params.pop('reception_receipt_id', None)
+        
         if not inventory_device.exists():
             
             if via_sync:
                 params['deleted'] = True
                 
-                receipt = ReceptionReceipt.objects.get(id=params.pop('reception_receipt_id'))
+                receipt = ReceptionReceipt.objects.get(id=receipt_id)
                 
                 inventory_device = InventoryDevice.objects.filter(
                     serial_number=serial_number,
@@ -196,9 +199,6 @@ def create_maintenance_device(request):
 
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            
-        if via_sync:
-            params.pop('reception_receipt_id')
         
         inventory_device = inventory_device.first()
         
