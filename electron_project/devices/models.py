@@ -90,7 +90,7 @@ class MaintenanceDevice(TimeStampedModel):
     notes = models.CharField(max_length=300, default='')
     
     deleted = models.BooleanField(default=False)
-    synced = models.BooleanField(default=False)
+    synced = models.BooleanField(default=True)
     
     def as_dict(self):
         

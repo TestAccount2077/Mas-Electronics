@@ -196,6 +196,9 @@ def create_maintenance_device(request):
 
                     status=status.HTTP_400_BAD_REQUEST
                 )
+            
+        if via_sync:
+            params.pop('reception_receipt_id')
         
         inventory_device = inventory_device.first()
         
