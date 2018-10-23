@@ -150,8 +150,12 @@ def create_maintenance_device(request):
     
     if request.is_ajax():
         
-        serial_number = request.GET['serialNumber']
-        assignee = request.GET.get('assignee', '')
+        data = request.GET
+        params = json.loads(data.get('params', '{}'))
+        
+        serial_number = data['serialNumber']
+        assignee = data.get('assignee', '')
+        via_sync = json.loads(data.get('viaSync', 'false'))
         
         maintenance_device = MaintenanceDevice.objects.filter(inventory_device__serial_number=serial_number, deleted=False)
         inventory_device = InventoryDevice.objects.filter(serial_number=serial_number, deleted=False, delivered=False)
@@ -168,19 +172,37 @@ def create_maintenance_device(request):
         
         if not inventory_device.exists():
             
-            return JsonResponse(
-                {
-                    'error': 'هذا الرقم غير موجود بالمخزن'
-                },
+            if via_sync:
+                params['deleted'] = True
                 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                receipt = ReceptionReceipt.objects.get(id=params.pop('reception_receipt_id'))
+                
+                inventory_device = InventoryDevice.objects.filter(
+                    serial_number=serial_number,
+                    reception_receipt=receipt
+                )
+                
+                device = inventory_device.first()
+                
+                if hasattr(device, 'maintenance_device'):
+                    device.maintenance_device.delete()
+            
+            else:
+                
+                return JsonResponse(
+                    {
+                        'error': 'هذا الرقم غير موجود بالمخزن'
+                    },
+
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         
         inventory_device = inventory_device.first()
         
         maintenance_device = MaintenanceDevice.objects.create(
             inventory_device=inventory_device,
-            assignee=assignee
+            assignee=assignee,
+            **params
         )
 
         return JsonResponse(maintenance_device.as_dict())

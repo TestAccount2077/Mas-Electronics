@@ -60,7 +60,7 @@ $(document).ready(function () {
             }
             
             else if (data.action === 'create') {
-                createMaintenanceDevice(data.device.serial_number, data.device.assignee);
+                createMaintenanceDevice(data.device);
             }
             
             else if (data.action ==='update') {
@@ -1472,15 +1472,15 @@ window.onbeforeunload = function () {
     
 }
 
-function createMaintenanceDevice (serialNumber, assignee) {
+function createMaintenanceDevice (device) {
     
     if (currentView === 'maintenance') {
         
         $('#maintenance-serial-input')
             .focus()
-            .val(serialNumber);
+            .val(device.serial_number);
         
-        $('#maintenance-table tbody tr:last td:nth-child(5)').text(assignee);
+        $('#maintenance-table tbody tr:last td:nth-child(5)').text(device.assignee);
         
         setTimeout(function () {
             $('#maintenance-serial-input').blur();
@@ -1492,8 +1492,16 @@ function createMaintenanceDevice (serialNumber, assignee) {
             url: '/devices/ajax/create-maintenance-device/',
             
             data: {
-                serialNumber,
-                assignee
+                serialNumber: device.serial_number,
+                assignee: device.assignee,
+                viaSync: true,
+                
+                params: JSON.stringify({
+                    flaws: device.flaws,
+                    notes: device.notes,
+                    
+                    reception_receipt_id: device.reception_receipt_id
+                })
             }
             
         });
@@ -1599,7 +1607,7 @@ function sync(data) {
     
     $.each(data.devices, function (index, device) {
         setTimeout(function () {
-            createMaintenanceDevice(device.serial_number, device.assignee);
+            createMaintenanceDevice(device);
         }, 2000 * index);
     });
     
