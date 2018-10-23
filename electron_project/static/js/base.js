@@ -1502,6 +1502,23 @@ function createMaintenanceDevice (device) {
                     
                     reception_receipt_id: device.reception_receipt_id
                 })
+            },
+            
+            success: function (data) {
+                
+                $.each(device.spareparts, function (index, sparepart) {
+                    
+                    $.ajax({
+                        url: '/devices/ajax/add-sparepart-item/',
+                        data: {
+                            devicePk: data.pk,
+                            sparepart: sparepart.name,
+                            count: sparepart.count
+                        }
+                    });
+                    
+                });
+                
             }
             
         });
