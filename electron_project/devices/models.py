@@ -190,6 +190,7 @@ class Sparepart(TimeStampedModel):
     name = models.CharField(max_length=300)
     count = models.IntegerField()
     minimum_qty = models.IntegerField()
+    unit_price = models.IntegerField(null=True, blank=True)
     
     def as_dict(self):
         
@@ -200,6 +201,7 @@ class Sparepart(TimeStampedModel):
             'name': self.name,
             'count': self.count,
             'minimum_qty': self.minimum_qty,
+            'unit_price': self.unit_price or '',
             'count_lt_minimum': self.count < self.minimum_qty,
             'count_lt_min_class': self.count_lt_min_class
         }

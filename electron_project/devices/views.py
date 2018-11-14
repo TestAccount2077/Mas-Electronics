@@ -360,7 +360,8 @@ def create_sparepart(request):
         sparepart = Sparepart.objects.create(
             name=data['name'],
             count=int(data['count']),
-            minimum_qty=int(data['minimum'])
+            minimum_qty=int(data['minimum']),
+            unit_price=int(data['unitPrice'])
         )
         
         return JsonResponse(sparepart.as_dict(), status=status.HTTP_201_CREATED)
