@@ -184,6 +184,24 @@ def update_cell_content(pk, serial, item_type, field_name, content):
             
             expense.description = content
             expense.save()
+            
+        elif field_name == 'category':
+            
+            if content:
+                if expense.balance_change > 0:
+                    type_ = 'RV'
+
+                else:
+                    type_ = 'EX'
+
+                category = ExpenseCategory.objects.get(category_type=type_, name=content)
+
+                expense.category = category
+                
+            else:
+                expense.category = None
+            
+            expense.save()
         
     return True, changes
 

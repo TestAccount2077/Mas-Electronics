@@ -6,8 +6,6 @@
 {% block table_id %}expense-archive-detail-table{% endblock %}
 
 
-
-
 {% block rows %}
 
     {% for expense in daily_expense.expenses %}
@@ -25,6 +23,7 @@
         {% endif %}
         
         <td data-field-name="description" data-input-type="text">{{ expense.description }}</td>
+        <td class="editable-locked" data-field-name="category" data-input-type="text">{{ expense.category.name|default:'' }}</td>
         <td dir="ltr">{{ expense.created }}</td>
         <td data-field-name="total_after_change" data-input-type="number">{{ expense.total_after_change }}</td>
         

@@ -1629,3 +1629,51 @@ function sync(data) {
     });
     
 }
+
+function notify(type, message) {
+    
+    if (type === 'error') {
+        
+        iziToast.error({
+            title: 'خطأ',
+            message,
+            position: 'topRight',
+            zindex: 99999
+        });
+        
+    }
+    
+    else if (type === 'warning') {
+        
+        iziToast.warning({
+            title: 'تحذير',
+            message,
+            position: 'topRight',
+            zindex: 99999
+        });
+        
+    }
+    
+    else if (type === 'info') {
+        
+        iziToast.info({
+            title: 'معلومات',
+            message,
+            position: 'topRight',
+            zindex: 99999
+        });
+        
+    }
+    
+    else if (type === 'success') {
+        
+        iziToast.success({
+            title: 'نجاح',
+            message,
+            position: 'topRight',
+            zindex: 99999
+        });
+        
+    }
+    
+}

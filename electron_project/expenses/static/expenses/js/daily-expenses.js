@@ -1,16 +1,18 @@
 var currentView = 'daily-expenses';
 
+var categoryMenu = $('.category-menu');
+
 $(document).ready(function () {
     
     $('#expenses-submenu')
         .show()
         .children().children(':first').addClass('active');
     
-    $('.extra-separator, #close-account').show();
+    $('.extra-separator, #close-account, #add-category').show();
     
 });
 
-$(document).on('keypress', '#daily-expenses-table tbody tr:last td.empty:nth-child(3), td.empty:nth-child(4), td.empty:nth-child(5)', function (e) {
+$(document).on('keypress', '#daily-expenses-table tbody tr:last td.empty:nth-child(3), td.empty:nth-child(4), td.empty:nth-child(5), td.empty:nth-child(6)', function (e) {
     
     var cell = $(this),
         row = cell.parent(),
@@ -21,9 +23,10 @@ $(document).on('keypress', '#daily-expenses-table tbody tr:last td.empty:nth-chi
         
         var expense = row.children(':nth-child(3)'),
             revenue = row.children(':nth-child(4)'),
-            description = row.children(':nth-child(5)');
+            description = row.children(':nth-child(5)'),
+            category = row.children(':nth-child(6)');
         
-        if (!description.text() || !(expense.text() || revenue.text())) {
+        if (!description.text() || !(expense.text() || revenue.text()) || !category.text()) {
             
             runFieldsRequiredNotification();
             
@@ -64,7 +67,8 @@ $(document).on('keypress', '#daily-expenses-table tbody tr:last td.empty:nth-chi
         }
         
         var data = {
-            description: description.text()
+            description: description.text(),
+            category: category.text()
         }
         
         if (expense.text()) {
@@ -102,7 +106,7 @@ $(document).on('keypress', '#daily-expenses-table tbody tr:last td.empty:nth-chi
                 });
                 
                 // Disabling editable cells
-                element.children('td:nth-child(3), td:nth-child(4), td:nth-child(5)').attr('contenteditable', false).removeClass('empty');
+                element.children('td:nth-child(3), td:nth-child(4), td:nth-child(5), td:nth-child(6)').attr('contenteditable', false).removeClass('empty');
                 
                 // Adding pk attr to new row
                 element.attr('data-pk', data.expense.id);
@@ -118,7 +122,7 @@ $(document).on('keypress', '#daily-expenses-table tbody tr:last td.empty:nth-chi
                                 '<td></td><td></td>' +
                                 '<td class="editable-locked empty expense-td" data-field-name="formatted_balance_change" data-input-type="number" data-sign="-" style="height:38px" contenteditable="true"></td>' +
                                 '<td class="editable-locked empty revenue-td" data-field-name="formatted_balance_change" data-input-type="number" data-sign="+" contenteditable="true"></td>' +
-                                '<td class="editable-locked empty" data-field-name="description" data-input-type="text" contenteditable="true"></td>' +
+                                '<td class="editable-locked empty" data-field-name="description" data-input-type="text" contenteditable="true"></td><td class="editable-locked empty" data-field-name="category" data-input-type="text" contenteditable="true"></td>' +
                                 '<td data-field-name="created"></td>' +
                                 '<td class="editable-locked empty" data-field-name="total_after_change" data-input-type="number"></td>' +
                                 '<td></td></tr>'
@@ -147,11 +151,11 @@ $(document).on('input', '#daily-expenses-table tbody tr td:nth-child(3), #daily-
         sign = cell.attr('data-sign');
     
     if (sign === '-') {
-        cell.parent().children(':nth-child(4)').text('');
+        cell.parent().children(':nth-child(4), :nth-child(6)').text('');
     }
     
     else {
-        cell.parent().children(':nth-child(3)').text('');
+        cell.parent().children(':nth-child(3), :nth-child(6)').text('');
     }
     
 });
@@ -244,3 +248,101 @@ function updateClosingTable(expense) {
     $('#todays-closing-total').text(expense.closing_balance);
     
 }
+
+$(document).on('click', '#confirm-add-category', function () {
+    
+    var name = $('#category-name').val(),
+        type = $('#category-list').val();
+    
+    if (!name) {
+        runFieldsRequiredNotification();
+        return;
+    }
+    
+    $.ajax({
+        url: '../ajax/add-category/',
+        type: 'POST',
+        
+        data: {
+            name,
+            type
+        },
+        
+        success: function (category) {
+            
+            if (type === 'RV') {
+                revenueCategories.push(category);
+            }
+            
+            else {
+                expenseCategories.push(category);
+            }
+            
+            $('#add-category-modal').modal('hide');
+            
+            notify('success', 'تم اضافة النوع بنجاح');
+            
+        },
+        error: generateAlerts
+        
+    });
+});
+
+var currentCell;
+
+$(document).on('click', '#daily-expenses-table tbody tr td:nth-child(6)', function (event) {
+    
+    currentCell = $(this);
+    
+    var row = currentCell.parent();
+    
+    if (currentCell.hasClass('editable-locked') && !currentCell.hasClass('empty')) {
+        return;
+    }
+    
+    categoryMenu.empty();
+    
+    if (row.children(':nth-child(3)').text()) {
+        
+        $.each(expenseCategories, function (index, category) {
+            categoryMenu.append(`<p>${ category.name }</p>`);
+        });
+        
+    }
+    
+    else if (row.children(':nth-child(4)').text()) {
+        
+        $.each(revenueCategories, function (index, category) {
+            categoryMenu.append(`<p>${ category.name }</p>`);
+        });
+        
+    }
+    
+    categoryMenu
+        .show()
+        .css({
+            'top': event.pageY + 10,
+            'left': event.pageX - 410
+        });
+});
+
+$(document).on('mouseenter', '.category-menu p', function () {
+    
+    var content = $(this).text(),
+        row = currentCell.parent();
+    
+    row.children('td:nth-child(6)').text(content);
+    
+});
+
+$(document).on('click', '.category-menu p', function () {
+    
+    categoryMenu.hide();
+        
+});
+
+$(document).on('keyup', '#daily-expenses-table tbody tr:last td:nth-child(6)', function () {
+    
+    $(this).text('');
+    
+});

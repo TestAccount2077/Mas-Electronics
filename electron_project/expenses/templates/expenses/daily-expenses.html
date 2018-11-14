@@ -24,7 +24,8 @@
         {% endif %}
         
         <td class="editable-locked" data-field-name="description" data-input-type="text">{{ expense.description }}</td>
-        <td dir="ltr">{{ expense.created|date:"d/m/Y h:i A" }}</td>
+        <td class="editable-locked" data-field-name="category" data-input-type="text">{{ expense.category.name|default:'' }}</td>
+        <td dir="ltr">{{ expense.created|date:"h:i A" }}</td>
         <td class="editable-locked" data-field-name="total_after_change" data-input-type="number">{{ expense.total_after_change }}</td>
         <td><img src="{% static 'images/remove.png' %}" class="icon remove-expense-item" data-pk="{{ expense.pk }}"></td>
         
@@ -37,6 +38,7 @@
         <td class="editable-locked empty expense-td" data-field-name="formatted_balance_change" data-sign="-" data-input-type="text" style="height:38px" contenteditable="true"></td>
         <td class="editable-locked empty revenue-td" data-field-name="formatted_balance_change" data-sign="+" data-input-type="text" contenteditable="true"></td>
         <td class="editable-locked empty" data-field-name="description" data-input-type="text" contenteditable="true"></td>
+        <td class="editable-locked empty" data-field-name="category" data-input-type="text" contenteditable="true"></td>
         <td data-field-name="created" dir="ltr"></td>
         <td class="editable-locked empty" data-field-name="total_after_change"></td>
         <td></td>
@@ -74,8 +76,41 @@
     </tbody>
     
 </table>
+
+<div id='add-category-modal' class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title people-modal-title">اضافة نوع</h5>
+            </div>
+            <div class="modal-body" id="filter-body">
+                <input style="margin-bottom:20px" type="text" class="form-control" id="category-name" placeholder="الاسم">
+                <select id="category-list" class="form-control">
+                    <option value="RV">اضافة</option>
+                    <option value="EX">سحب</option>
+                </select>
+            </div>
+            <div class="modal-footer" style="background-color:#F3F6F8;border-radius:6px">
+                <br>
+                <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">الغاء</button>
+                <button id='confirm-add-category' type="button" class="btn btn-success">اضافة</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="category-menu dismiss"></div>
+
 {% endblock %}
 
 {% block js %}
+
+    <script type="text/javascript">
+        
+        var revenueCategories = {{ revenue_categories|safe }},
+            expenseCategories = {{ expense_categories|safe }};
+    
+    </script>
+
     <script src="{% static 'expenses/js/daily-expenses.js' %}"></script>
 {% endblock %}

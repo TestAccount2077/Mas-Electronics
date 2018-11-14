@@ -12,6 +12,7 @@ from abstract.models import TimeStampedModel, App
 class Expense(TimeStampedModel):
     
     description = models.CharField(max_length=300)
+    category = models.ForeignKey('ExpenseCategory', null=True, blank=True, related_name='expenses')
     balance_change = models.FloatField()
     total_after_change = models.FloatField(null=True, blank=True)
     
@@ -63,10 +64,11 @@ class Expense(TimeStampedModel):
         data = {
             'id': self.id,
             'description': self.description,
+            'category': getattr(self.category, 'name', ''),
             'balance_change': self.balance_change,
             'formatted_balance_change': self.formatted_balance_change,
             'total_after_change': self.total_after_change,
-            'created': self.created.astimezone(pendulum.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %I:%M %p')
+            'created': self.created.astimezone(pendulum.timezone(settings.TIME_ZONE)).strftime('%I:%M %p')
         }
         
         return data
@@ -135,3 +137,23 @@ class DailyExpense(TimeStampedModel):
             return float(total_expenses)
         
         return 0
+    
+    
+class ExpenseCategory(TimeStampedModel):
+    
+    TYPES = (
+        ('RV', 'اضافة'),
+        ('EX', 'سحب')
+    )
+    
+    name = models.CharField(max_length=100)
+    category_type = models.CharField(max_length=2, choices=TYPES, default='RV')
+    
+    def as_dict(self):
+        
+        return {
+            'id': self.id,
+            'name': self.name,
+            'type': self.category_type,
+            'formatted_type': self.get_category_type_display()
+        }

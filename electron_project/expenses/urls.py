@@ -16,5 +16,7 @@ urlpatterns = [
     url(r'ajax/delete-expense/$', delete_expense),
     
     url(r'ajax/filter-expenses/$', filter_expenses),
-    url(r'ajax/close-account/$', close_account)
+    url(r'ajax/close-account/$', close_account),
+    
+    url(r'^ajax/add-category/$', add_category),
 ]

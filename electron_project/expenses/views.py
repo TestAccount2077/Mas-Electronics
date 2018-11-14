@@ -17,6 +17,8 @@ def daily_expenses_view(request):
     utils.close_old_days()
     
     data['expenses'] = Expense.objects.filter(date=timezone.now().date())
+    data['revenue_categories'] = [category.as_dict() for category in ExpenseCategory.objects.filter(category_type='RV')]
+    data['expense_categories'] = [category.as_dict() for category in ExpenseCategory.objects.filter(category_type='EX')]
     
     return render(request, 'expenses/daily-expenses.html', context=data)
 
@@ -48,8 +50,17 @@ def create_expense(request):
         description = data['description']
         balance_change = float(data['balanceChange'])
         
+        if balance_change > 0:
+            type_ = 'RV'
+            
+        else:
+            type_ = 'EX'
+        
+        category = ExpenseCategory.objects.get(category_type=type_, name=data['category'])
+        
         expense_obj = Expense.objects.create(
             description=description,
+            category=category,
             balance_change=balance_change,
             date=timezone.now().date()
         )
@@ -189,4 +200,31 @@ def close_account(request):
         daily_expense = utils.close_account()
         
         return JsonResponse(daily_expense.as_dict(include_closing_data=True))
+
+@csrf_exempt
+def add_category(request):
     
+    if request.is_ajax():
+        
+        data = request.POST
+        
+        name = data['name']
+        type_ = data['type']
+        
+        exists = ExpenseCategory.objects.filter(name=name, category_type=type_).exists()
+        
+        if exists:
+            
+            return JsonResponse(
+                {
+                    'error': 'هذا النوع موجود بالفعل'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        category = ExpenseCategory.objects.create(
+            name=name,
+            category_type=type_
+        )
+        
+        return JsonResponse(category.as_dict())
