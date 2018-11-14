@@ -54,8 +54,7 @@ class UploadHandler(object):
         res = self.DRIVE.files().update(
             body=metadata,
             media_body='new data.zip',
-            fileId='1GZN0-gyu8OVumCsxVNgF2OLLFpSteEVT',
-            keepRevisionForever=True
+            fileId='1GZN0-gyu8OVumCsxVNgF2OLLFpSteEVT'
         ).execute()
         
         
