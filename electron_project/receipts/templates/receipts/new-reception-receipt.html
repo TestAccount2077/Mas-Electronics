@@ -7,8 +7,8 @@
 {% block table_name_attr %}new-reception-receipt-table{% endblock %}
 
 {% block upper_section %}
-    <input id="new-reception-receipt-company" type="text" class="form-control" placeholder="اسم الشركة" dir="rtl" style="margin: 30px auto; width:50%; display:inline-block">
-    <input id="new-reception-receipt-date" type="text" class="form-control" placeholder="التاريخ" dir="rtl" style="width:49%; display:inline-block">
+    <input id="new-reception-receipt-company" type="text" class="form-control company-input" placeholder="اسم الشركة" dir="rtl" style="margin: 30px auto; width:50%; display:inline-block">
+    <input id="new-reception-receipt-date" type="text" class="form-control date-input" placeholder="التاريخ" dir="rtl" style="width:49%; display:inline-block">
 {% endblock %}
 
 {% block labels %}
@@ -36,7 +36,7 @@
                 <td style="height: 37px" data-num='0'></td>
                 <td class="new-reception-cell editable" data-num='1'></td>
                 <td class="new-reception-cell editable" data-num='2'></td>
-                <td data-num='3' style="width:550px; text-align:right"></td>
+                <td data-num='3' style="width:55%; text-align:right"></td>
             </tr>
             {% endfor %}
         </tbody>

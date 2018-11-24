@@ -431,7 +431,7 @@ function checkForCollisions (row, body, table) {
                 '<td style="height: 37px" data-num="0"></td>' +
                 '<td class="editable" data-num="1"></td>' +
                 '<td class="editable" data-num="2"></td>' +
-                '<td data-num="3" style="width:550px; text-align:right"></td>' +
+                '<td data-num="3" style="width:55%; text-align:right"></td>' +
             '</tr>';
             
             body.append(row);

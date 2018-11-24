@@ -16,7 +16,9 @@ function printReceipt(table, clearableInputs, newId, typeLabel) {
     
     var data = {
         newId: newId,
-        typeLabel: typeLabel
+        typeLabel: typeLabel,
+        company: $('.company-input').val(),
+        date: $('.date-input').val(),
     };
     
     prepareTableForPrint(tableCount, printedBody, pageNumberElement, currentRow, currentTable, body, 'receipt', data);
@@ -234,7 +236,7 @@ function prepareTableForPrint(tableCount, printedBody, pageNumberElement, curren
     
     if (type === 'receipt') {
         
-        var rowCount = 14,
+        var rowCount = 15,
             date = new Date(),
             date = ' ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
         
@@ -248,9 +250,24 @@ function prepareTableForPrint(tableCount, printedBody, pageNumberElement, curren
             $('#inner-repr-label').text($('#receipt-detail-inner-repr').text());
         }
         
+        $('#print-mid-labels').html(`
+            <p><strong>اسم الشركة: </strong><span id="print-company-label"></span></p>
+            <p><strong>التاريخ: </strong><span id="print-date-label"></span></p>
+        `);
+        
+        $('#print-date-label').text(data.company);
+        $('#print-company-label').text(data.date);
+        
+        $('#print-date-label2').text(date);
+        
     }
     
     else {
+        
+        $('#print-mid-labels').html(`
+            <p><strong>تاريخ الطباعة: </strong><span id="print-date-label"></span></p>
+            <p style="display:none"><strong>اسم الشركة: </strong><span id="print-company-label"></span></p>
+        `);
         
         var rowCount = 20,
             date = new Date(),
@@ -258,18 +275,8 @@ function prepareTableForPrint(tableCount, printedBody, pageNumberElement, curren
         
         $('.reprs-section, .print-section-footer').hide();
         
-        if (currentView === 'daily-expenses') {
-            if ($("#todays-closing-table").is(':visible')) {
-                $('#print-table').after($('#todays-closing-table').clone());
-            }
-        }
-        
-        else if (currentView === 'expense-archive-detail') {
-            $('#print-table').after($('#expense-archive-closing-table').clone());
-        }
+        $('#print-date-label').text(date);
     }
-    
-    $('#print-date-label').text(date);
     
     var bodyCopy = body.clone();
     
@@ -292,9 +299,22 @@ function prepareTableForPrint(tableCount, printedBody, pageNumberElement, curren
         }
         
         if (type === 'receipt') {
-            $('.print-container').height(620);
+            $('.print-container').height(625);
         } else {
             $('.print-container').height(850);
+        }
+        
+        if (i === tableCount) {
+            if (currentView === 'daily-expenses') {
+                if ($("#todays-closing-table").is(':visible')) {
+                    $('#print-table').after($('#todays-closing-table').clone());
+                }
+            }
+
+            else if (currentView === 'expense-archive-detail') {
+                $('#print-table').after($('#expense-archive-closing-table').clone());
+            }
+            
         }
         
         print();

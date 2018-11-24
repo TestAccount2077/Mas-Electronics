@@ -21,7 +21,7 @@ $(document).ready(function () {
                     '<td style="height: 37px" data-num="0"></td>' +
                     '<td data-num="1"></td>' +
                     '<td data-num="2" class="unlockable" data-lock-type="receipt-detail-type"></td>' +
-                    '<td data-num="3" style="width:550px; text-align:right"></td>' +
+                    '<td data-num="3" style="width:55%; text-align:right"></td>' +
                 '</tr>');
     }
 

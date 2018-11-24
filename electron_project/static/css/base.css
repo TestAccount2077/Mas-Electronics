@@ -164,6 +164,9 @@ td.attendance-td {
     border-radius: 5px;
     box-shadow: 0px 0px 3px 0px black;
     direction: rtl;
+    max-height: 400px;
+    overflow: hidden;
+    overflow-y: scroll;
 }
 
 .category-menu p {

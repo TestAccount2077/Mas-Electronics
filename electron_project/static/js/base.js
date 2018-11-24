@@ -542,20 +542,23 @@ $(document).on('click', '#print', function (e) {
     
     var body = table.children('tbody'),
         rowCount = body.children(':visible').length,
-        tableCount = Math.ceil(rowCount / 20),
         pageNumberElement = $('#print-receipt-page-num');
     
     var printedBody = printedTable.children('tbody');
     
     var data = {
         typeLabel: $('#receipt-detail-type-label').text(),
-        newId: $('#receipt-detail-id-label').text()
+        newId: $('#receipt-detail-id-label').text(),
+        company: $('#receipt-detail-company-label').text(),
+        date: $('#receipt-detail-date-label').text()
     }
     
     if (currentView === 'receipt-detail') {
+        var tableCount = Math.ceil(rowCount / 15);
         prepareTableForPrint(tableCount, printedBody, pageNumberElement, 1, 1, body, 'receipt', data);
         
     } else {
+        var tableCount = Math.ceil(rowCount / 20);
         prepareTableForPrint(tableCount, printedBody, pageNumberElement, 1, 1, body);
     }
     

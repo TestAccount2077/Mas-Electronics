@@ -14,3 +14,7 @@
 body {
     background-color: whitesmoke !important;
 }
+
+*::-webkit-scrollbar {
+    display: none !important;
+}
