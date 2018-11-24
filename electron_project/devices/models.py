@@ -216,6 +216,7 @@ class DeviceSparepartRelation(TimeStampedModel):
     device = models.ForeignKey(MaintenanceDevice, null=True, blank=True, related_name='spareparts')
     sparepart = models.ForeignKey(Sparepart, null=True, blank=True, related_name='devices')
     
+    diagram_code = models.CharField(max_length=300, default='')
     count = models.IntegerField(default=0)
     
     def as_dict(self):
@@ -223,5 +224,6 @@ class DeviceSparepartRelation(TimeStampedModel):
         return {
             'id': self.id,
             'name': self.sparepart.name,
+            'diagram_code': self.diagram_code,
             'count': self.count
         }

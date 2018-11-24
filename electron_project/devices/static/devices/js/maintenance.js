@@ -295,18 +295,29 @@ $(document).on('keypress', '#edit-sparepart-input, #edit-count-input', function 
 function addSparepart() {
     
     var sparepart = $('#edit-sparepart-input').val(),
+        dCode = $('#edit-d-code-input').val(),
         count = $('#edit-count-input').val();
     
-    if (!sparepart || !count) {
+    if (!sparepart || !count || !dCode) {
         
-        alert('No fields')
+        iziToast.error({
+            title: 'خطأ',
+            message: 'يرجى ملأ الخانات الخالية',
+            position: 'topRight',
+            zindex: 99999
+        });
         
         return;
     }
     
     if (!spareparts.includes(sparepart)) {
         
-        alert('Doesnt exist')
+        iziToast.error({
+            title: 'خطأ',
+            message: 'قطعة الغيار هذه غير موجودة',
+            position: 'topRight',
+            zindex: 99999
+        });
         
         return;
         
@@ -314,7 +325,12 @@ function addSparepart() {
     
     if (!isNumeric(count)) {
         
-        alert('Not numeric')
+        iziToast.error({
+            title: 'خطأ',
+            message: 'الكمية يجب ان تكون رقمية',
+            position: 'topRight',
+            zindex: 99999
+        });
         
         return;
     }
@@ -325,6 +341,7 @@ function addSparepart() {
         data: {
             devicePk,
             sparepart,
+            dCode,
             count
         },
         
@@ -405,8 +422,9 @@ function composeSparepartElement(sparepart) {
     
     return `
         <div class="sparepart-item" dir="rtl" data-pk="${ sparepart.id }">
-            <h3 style="display:inline-block; width:100%">
-                <strong>&bull; اسم القطعة: </strong><span dir="ltr">${ sparepart.name }</span>
+            <h3 style="display:inline-block; width:100%; font-size: 20px">
+                <strong>&bull; اسم القطعة: </strong><span dir="ltr">${ sparepart.name }</span> |
+                <strong>الكود: </strong><span dir="ltr">${ sparepart.diagram_code }</span> |
                 <strong>الكمية</strong>: <span>${ sparepart.count }</span>
                 <a href="#" style="float:left; margin-right:10px" class="sparepart-delete">حذف</a>
                 <a href="#" style="float:left" class="sparepart-inner-edit">تعديل</a>
