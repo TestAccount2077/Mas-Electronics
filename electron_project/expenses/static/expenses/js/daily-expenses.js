@@ -89,6 +89,8 @@ $(document).on('keypress', '#daily-expenses-table tbody tr:last td.empty:nth-chi
             
             success: function (data) {
                 
+                $('.category-menu').hide();
+                
                 $('#current-balance-label').text(data.current_balance);
                 
                 var element = $('#daily-expenses-table tbody tr:last');
@@ -337,6 +339,7 @@ $(document).on('mouseenter', '.category-menu p', function () {
 
 $(document).on('click', '.category-menu p', function () {
     
+    currentCell.focus();
     categoryMenu.hide();
         
 });

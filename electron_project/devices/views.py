@@ -471,8 +471,13 @@ def filter_maintenance(request):
         sparepart = data['sparepart']
         sparepart_count = data['count']
         notes = data['notes']
+        include_archived = json.loads(data['includeArchived'])
         
-        all_devices = MaintenanceDevice.objects.filter(deleted=False)
+        if include_archived:
+            all_devices = MaintenanceDevice.objects.all()
+        
+        else:
+            all_devices = MaintenanceDevice.objects.filter(deleted=False)
         
         if serial:
             serial_devices = all_devices.filter(inventory_device__serial_number=serial)

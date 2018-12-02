@@ -34,7 +34,7 @@
         <td data-field-name="sparepart_name">
         
         {% for sparepart in device.spareparts %}
-            <p>الاسم: {{ sparepart.name }} الكمية: {{ sparepart.count }}</p>
+            <p>الاسم: {{ sparepart.name }} الكمية: {{ sparepart.count }} الكود: {{ sparepart.diagram_code }}</p>
         {% endfor %}
         
         </td>

@@ -142,7 +142,7 @@ var viewsAndFilterModals = {
         
         head: 'جدول الصيانة',
         
-        body: '<input type="text" class="form-control" placeholder="رقم الجهاز" style="margin-bottom:20px" id="filter-serial"><input type="text" class="form-control" placeholder="اسم الشركة" style="margin-bottom:20px" id="filter-company"><input type="text" class="form-control" placeholder="نوع الجهاز" id="filter-type" style="margin-bottom:20px"><input type="text" class="form-control" placeholder="من" style="margin-bottom:20px" id="filter-from"><input type="text" class="form-control" placeholder="الى" style="margin-bottom:20px" id="filter-to"><input type="text" class="form-control" placeholder="مسؤول الصيانة" style="margin-bottom:20px" id="filter-assignee"><input type="text" class="form-control" placeholder="مظاهر العيب" style="margin-bottom:20px" id="filter-flaws"><input type="text" class="form-control" placeholder="ما تم تغييره" style="margin-bottom:20px" id="filter-sparepart"><input type="text" class="form-control" placeholder="العدد" style="margin-bottom:20px" id="filter-count"><input type="text" class="form-control" placeholder="ملاحظات" style="margin-bottom:20px" id="filter-notes">'
+        body: '<input type="text" class="form-control" placeholder="رقم الجهاز" style="margin-bottom:20px" id="filter-serial"><input type="text" class="form-control" placeholder="اسم الشركة" style="margin-bottom:20px" id="filter-company"><input type="text" class="form-control" placeholder="نوع الجهاز" id="filter-type" style="margin-bottom:20px"><input type="text" class="form-control" placeholder="من" style="margin-bottom:20px" id="filter-from"><input type="text" class="form-control" placeholder="الى" style="margin-bottom:20px" id="filter-to"><input type="text" class="form-control" placeholder="مسؤول الصيانة" style="margin-bottom:20px" id="filter-assignee"><input type="text" class="form-control" placeholder="مظاهر العيب" style="margin-bottom:20px" id="filter-flaws"><input type="text" class="form-control" placeholder="ما تم تغييره" style="margin-bottom:20px" id="filter-sparepart"><input type="text" class="form-control" placeholder="العدد" style="margin-bottom:20px" id="filter-count"><input type="text" class="form-control" placeholder="ملاحظات" style="margin-bottom:20px" id="filter-notes"><label for="include-archived">تضمين الأجهزة المؤرشفة</label><input type="checkbox" id="include-archived">'
         
     },
     
@@ -651,7 +651,8 @@ $(document).on('click', '#confirm-filter-btn', function (e) {
             flaws: $('#filter-flaws').val(),
             sparepart: $('#filter-sparepart').val(),
             count: $('#filter-count').val(),
-            notes: $('#filter-notes').val()
+            notes: $('#filter-notes').val(),
+            includeArchived: $('#include-archived').is(':checked')
         }
         
         if (!isNumeric(data.count)) {
@@ -680,9 +681,37 @@ $(document).on('click', '#confirm-filter-btn', function (e) {
                 
                 body.children(':not(:last)').hide();
                 
+                var lastRow = $('#maintenance-table tbody tr:last');
+                
                 $.each(data.devices, function (index, device) {
-                    $('#maintenance-table tbody tr[data-serial="' + device.serial_number + '"]').show();
+                    
+                    if ($('#maintenance-table tbody tr[data-serial="' + device.serial_number + '"]').length) {
+                        $('#maintenance-table tbody tr[data-serial="' + device.serial_number + '"]').show()
+                    }
+                    
+                    else {
+                        
+                        var element = `
+
+                            <tr data-pk="${ device.pk }" data-serial="${ device.serial_number }" data-receipt-pk="${ device.reception_receipt_id }">
+                                <td>${ device.serial_number }</td>
+                                <td>${ device.company_name }</td>
+                                <td>${ device.device_type }</td>
+                                <td>${ device.entrance_date }</td>
+                                <td>${ device.assignee }</td>
+                                <td>${ device.flaws }</td>
+                                <td><a href="#">تعديل</a></td>
+                                <td></td>
+                                <td><a href="../${ device.pk }">ذهاب</a></td>
+                                <td><img src="/static/images/remove.png' %}" class="icon remove-maintenance-item" data-pk="${ device.pk }"></td>
+                            </tr>`;
+                        
+                        $('#maintenance-table tbody').append(element);
+                        
+                    }
                 });
+                
+                $('#maintenance-table tbody').append(lastRow);
                 
                 $('#filter-modal').modal('hide');
                 
@@ -1578,6 +1607,7 @@ function AddSparepart(Data) {
         data: {
             serial: Data.serial,
             sparepart: Data.sparepart,
+            dCode: Data.dCode,
             count: Data.count
         },
         
