@@ -53,7 +53,7 @@ def create_expense(request):
         
         context = {
             'expense': expense_obj.as_dict(),
-            'current_balance': app.current_balance
+            'current_balance': App.objects.first().current_balance
         }
         
         daily_expense = DailyExpense.objects.get(date=expense_obj.date)

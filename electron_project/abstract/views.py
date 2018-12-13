@@ -50,17 +50,17 @@ def add_worker(request):
         
         data = request.POST
         
-        password = data['password']
+        username = data['username']
         
-        if WorkerAccount.objects.filter(password=password).exists():
+        if WorkerAccount.objects.filter(username=username).exists():
             
             return JsonResponse(
                 {
-                    'error': 'هذا الرقم مستخدم بالفعل'
+                    'error': 'هذا الاسم مستخدم بالفعل'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        WorkerAccount.objects.create(username=data['username'], password=data['password'])
+        WorkerAccount.objects.create(username=username)
         
         return JsonResponse({})

@@ -1763,22 +1763,10 @@ $(document).on('click', '#confirm-change-password-btn', function () {
 
 $(document).on('click', '#confirm-add-worker-btn', function () {
     
-    var Username = $('#add-worker-username').val(),
-        Password = $('#add-worker-pass').val(),
-        PasswordConfirm = $('#add-worker-pass-confirm').val();
+    var Username = $('#add-worker-username').val();
     
     if (!Username) {
         runFieldsRequiredNotification();
-        return;
-    }
-    
-    if (Password !== PasswordConfirm) {
-        iziToast.error({
-            title: 'خطأ',
-            message: 'يجب تطابق كلمات السر',
-            position: 'topRight',
-            zindex: 99999
-        });
         return;
     }
     
@@ -1786,8 +1774,7 @@ $(document).on('click', '#confirm-add-worker-btn', function () {
         url: '/ajax/add-worker/',
         type: 'POST',
         data: {
-            username: Username,
-            password: Password
+            username: Username
         },
         
         success: function (data) {
