@@ -1710,3 +1710,109 @@ function notify(type, message) {
     }
     
 }
+
+$(document).on('click', '#confirm-change-password-btn', function () {
+    
+    var Username = $('#change-pass-username').val(),
+        Password = $('#change-password-pass').val(),
+        PasswordConfirm = $('#change-password-confirm').val();
+    
+    if (!Username || !Password || !PasswordConfirm) {
+        runFieldsRequiredNotification();
+        return;
+    }
+    
+    if (Password !== PasswordConfirm) {
+        iziToast.error({
+            title: 'خطأ',
+            message: 'يجب تطابق كلمات السر',
+            position: 'topRight',
+            zindex: 99999
+        });
+        return;
+    }
+    
+    $.ajax({
+        url: '/ajax/change-password/',
+        type: 'POST',
+        data: {
+            username: Username,
+            password: Password
+        },
+        
+        success: function (data) {
+            
+            $('#change-password-modal').modal('hide');
+            
+            iziToast.success({
+                title: 'نجاح',
+                message: 'تم التغيير بنجاح',
+                position: 'topRight',
+                zindex: 99999
+            });
+            
+            if (Username == 'admin') {
+                password = Password;
+            }
+            
+        },
+        error: generateAlerts
+    });
+    
+});
+
+$(document).on('click', '#confirm-add-worker-btn', function () {
+    
+    var Username = $('#add-worker-username').val(),
+        Password = $('#add-worker-pass').val(),
+        PasswordConfirm = $('#add-worker-pass-confirm').val();
+    
+    if (!Username) {
+        runFieldsRequiredNotification();
+        return;
+    }
+    
+    if (Password !== PasswordConfirm) {
+        iziToast.error({
+            title: 'خطأ',
+            message: 'يجب تطابق كلمات السر',
+            position: 'topRight',
+            zindex: 99999
+        });
+        return;
+    }
+    
+    $.ajax({
+        url: '/ajax/add-worker/',
+        type: 'POST',
+        data: {
+            username: Username,
+            password: Password
+        },
+        
+        success: function (data) {
+            
+            $('#add-worker-modal').modal('hide');
+            
+            iziToast.success({
+                title: 'نجاح',
+                message: 'تم الاضافة بنجاح',
+                position: 'topRight',
+                zindex: 99999
+            });
+            
+            var element = `<p>${ Username }</p>`;
+            
+            $('#loan-employee-container').children(':last').before(element);
+            
+            var element = `<option value="${ Username }>${ Username }"></option>`;
+            
+            $('#change-pass-username').append(element);
+            
+            loans[Username] = [];
+            
+        },
+        error: generateAlerts
+    });
+    
+});

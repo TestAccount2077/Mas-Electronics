@@ -3,6 +3,7 @@ from devices.models import *
 from expenses.models import *
 
 from abstract.models import App
+from accounts.models import WorkerAccount
 
 def get_object_or_None(model, **kwargs):
     
@@ -120,6 +121,8 @@ def get_abstract_data(view=None):
     
     app = App.objects.first()
     
+    workers = WorkerAccount.objects.all()
+    
     if created:
         
         todays_expense.opening_balance = app.current_balance
@@ -127,7 +130,8 @@ def get_abstract_data(view=None):
         
     data = {
         'opening_balance': todays_expense.opening_balance,
-        'current_balance': app.current_balance
+        'current_balance': app.current_balance,
+        'workers': workers
     }
         
     if view == 'daily-expenses':

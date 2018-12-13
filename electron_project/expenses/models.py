@@ -149,6 +149,10 @@ class ExpenseCategory(TimeStampedModel):
     name = models.CharField(max_length=100)
     category_type = models.CharField(max_length=2, choices=TYPES, default='RV')
     
+    def __str__(self):
+        
+        return self.name
+    
     def as_dict(self):
         
         return {
@@ -157,3 +161,32 @@ class ExpenseCategory(TimeStampedModel):
             'type': self.category_type,
             'formatted_type': self.get_category_type_display()
         }
+    
+    
+class Loan(TimeStampedModel):
+    
+    name = models.CharField(max_length=100)
+    amount = models.FloatField()
+    notes = models.TextField(default='')
+    
+    expense = models.OneToOneField('expenses.Expense', null=True, blank=True, related_name='loan')
+    
+    def as_dict(self, **kwargs):
+        
+        data = {
+            'id': self.id,
+            'name': self.name,
+            'amount': self.amount,
+            'notes': self.notes,
+            'created': self.formatted_created
+        }
+        
+        if kwargs.get('include_sum', False):
+            data['loan_sum'] = sum([-loan.amount for loan in Loan.objects.filter(name=self.name)])
+        
+        return data
+    
+    @property
+    def formatted_created(self):
+        
+        return self.created.astimezone(pendulum.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %I:%M %p')

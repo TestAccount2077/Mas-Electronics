@@ -8,6 +8,8 @@ import pendulum
 from abstract.models import App
 from .models import *
 
+from accounts.models import WorkerAccount
+
 def update_daily_expense(expense=None):
     
     if not expense:
@@ -61,3 +63,41 @@ def close_account():
     daily_expense.save()
     
     return daily_expense
+
+def get_formatted_loans():
+    
+    loans = {}
+        
+    for account in WorkerAccount.objects.all():
+        user_loans = [loan.as_dict() for loan in Loan.objects.filter(name=account.username)]
+        
+        loans[account.username] = user_loans
+        
+    return loans
+
+def create_expense(balance_change, description, category):
+    
+    if balance_change > 0:
+        type_ = 'RV'
+
+    else:
+        type_ = 'EX'
+
+    category = ExpenseCategory.objects.get(category_type=type_, name=category)
+
+    expense_obj = Expense.objects.create(
+        description=description,
+        category=category,
+        balance_change=balance_change,
+        date=timezone.now().date()
+    )
+
+    app = App.objects.first()
+
+    app.current_balance += balance_change
+    app.save()
+
+    expense_obj.total_after_change = app.current_balance
+    expense_obj.save()
+    
+    return expense_obj

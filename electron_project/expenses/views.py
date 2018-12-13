@@ -1,14 +1,16 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils import timezone
-
-from abstract.utils import get_date_filters, get_abstract_data
-
-from . import utils
-
 from django.views.decorators.csrf import csrf_exempt
 
+from rest_framework import status
+
+from . import utils
 from .models import *
+
+from accounts.models import WorkerAccount
+from abstract.utils import get_date_filters, get_abstract_data
+
 
 def daily_expenses_view(request):
     
@@ -46,32 +48,8 @@ def create_expense(request):
     if request.is_ajax():
         
         data = request.POST
-        
-        description = data['description']
-        balance_change = float(data['balanceChange'])
-        
-        if balance_change > 0:
-            type_ = 'RV'
-            
-        else:
-            type_ = 'EX'
-        
-        category = ExpenseCategory.objects.get(category_type=type_, name=data['category'])
-        
-        expense_obj = Expense.objects.create(
-            description=description,
-            category=category,
-            balance_change=balance_change,
-            date=timezone.now().date()
-        )
-        
-        app = App.objects.first()
-        
-        app.current_balance += balance_change
-        app.save()
-        
-        expense_obj.total_after_change = app.current_balance
-        expense_obj.save()
+                
+        expense_obj = utils.create_expense(float(data['balanceChange']), data['description'], data['category'])
         
         context = {
             'expense': expense_obj.as_dict(),
@@ -228,3 +206,67 @@ def add_category(request):
         )
         
         return JsonResponse(category.as_dict())
+    
+def loans_view(request):
+    
+    data = get_abstract_data()
+    
+    loans = utils.get_formatted_loans()
+    
+    total_loans = sum([loan.amount for loan in Loan.objects.all()])
+    
+    if total_loans > 0:
+        label = 'اجمالى المستحقات: {} جم'.format(total_loans)
+        
+    else:
+        label = 'اجمالى السلف: {} جم'.format(total_loans)
+    
+    data.update(
+        loans=loans,
+        total_loans_label=label
+    )
+    
+    return render(request, 'expenses/loans.html', context=data)
+
+@csrf_exempt
+def create_loan(request):
+    
+    if request.is_ajax():
+        
+        data = request.POST
+        
+        amount = float(data['amount'])
+        name = data['name']
+        
+        if amount > 0:
+            type_ = 'سداد سلفة'
+            category = 'سلف'
+            
+        else:
+            type_ = 'سلفة'
+            category = 'سلف'
+        
+        expense = utils.create_expense(amount, '{} {}'.format(type_, name), category=category)
+                
+        loan = Loan.objects.create(
+            name=name,
+            amount=amount,
+            notes=data['notes'],
+            expense=expense
+        )
+        
+        total_loans = sum([loan.amount for loan in Loan.objects.all()])
+        
+        if total_loans > 0:
+            label = 'اجمالى المستحقات: {} جم'.format(total_loans)
+
+        else:
+            label = 'اجمالى السلف: {} جم'.format(total_loans)
+        
+        return JsonResponse(
+            {
+                'loan': loan.as_dict(include_sum=True),
+                'current_balance': App.objects.first().current_balance,
+                'total_loans_label': label
+            }
+        )
