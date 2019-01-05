@@ -6,6 +6,17 @@
 {% block table_id %}expense-archive-detail-table{% endblock %}
 
 
+{% block above_table %}
+    
+<div style="margin-left: 40%; margin-bottom: 30px">
+    <button class="btn btn-lg btn-success" onclick="location.href = `../{{ prev_id }}`;">&lArr;</button>
+    <img src="{% static 'images/wolf.png' %}" style="width:50px; height:45px">
+    <button class="btn btn-lg btn-success" onclick="location.href = `../{{ next_id }}`;">&rArr;</button>
+    <h3 style="margin-left: 15px">{{ daily_expense.date }}</h3>
+</div>
+
+{% endblock %}
+
 {% block rows %}
 
     {% for expense in daily_expense.expenses %}
@@ -23,7 +34,7 @@
         {% endif %}
         
         <td data-field-name="description" data-input-type="text">{{ expense.description }}</td>
-        <td class="editable-locked" data-field-name="category" data-input-type="text">{{ expense.category.name|default:'' }}</td>
+        <td class="editable-locked" data-field-name="category" data-input-type="text">{{ expense.category }}</td>
         <td dir="ltr">{{ expense.created }}</td>
         <td data-field-name="total_after_change" data-input-type="number">{{ expense.total_after_change }}</td>
         
@@ -62,7 +73,7 @@
         
         $('#expenses-submenu')
             .show()
-            .children().children(':last').addClass('active');
+            .children().children(':nth-child(2)').addClass('active');
         
         var currentView = 'expense-archive-detail',
             expenseDetailDate = "{{ daily_expense.date }}";

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Sum
 
 from rest_framework import status
 
@@ -39,6 +40,13 @@ def expense_archive_detail(request, pk):
     expense = DailyExpense.objects.get(pk=pk)
     
     data['daily_expense'] = expense.as_dict(include_closing_data=True, include_expenses=True)
+    
+    data.update(
+        next_id=getattr(expense.get_next(), 'id', expense.id),
+        prev_id=getattr(expense.get_prev(), 'id', expense.id)
+    )
+    
+    print(data['next_id'], data['prev_id'])
 
     return render(request, 'expenses/expense-archive-detail.html', context=data)
 
@@ -255,7 +263,14 @@ def create_loan(request):
             expense=expense
         )
         
-        total_loans = sum([loan.amount for loan in Loan.objects.all()])
+        total_loans = Loan.objects.aggregate(total=Sum('amount'))['total']
+        
+        total_personal_loans = Loan.objects.filter(
+            name=name
+        
+        ).aggregate(
+            total=Sum('amount')
+        )['total']
         
         if total_loans > 0:
             label = 'اجمالى المستحقات: {} جم'.format(total_loans)
@@ -267,6 +282,7 @@ def create_loan(request):
             {
                 'loan': loan.as_dict(include_sum=True),
                 'current_balance': App.objects.first().current_balance,
-                'total_loans_label': label
+                'total_loans_label': label,
+                'total_personal_loans': total_personal_loans
             }
         )

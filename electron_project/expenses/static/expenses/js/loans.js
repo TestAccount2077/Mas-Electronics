@@ -2,6 +2,16 @@ const table = $('#loans-table');
 var currUser;
 var foot = $('#loans-table tfoot tr:last');
 
+var currentView = 'loans';
+
+$(document).ready(function () {
+    
+    $('#expenses-submenu')
+        .show()
+        .children().children(':last').addClass('active');
+    
+});
+
 $(document).on('click', '#loan-employee-container p', function () {
     
     currUser = $(this).text();
@@ -16,11 +26,13 @@ $(document).on('click', '#loan-employee-container p', function () {
     
     body.empty();
     
+    var total = 0;
+    
     $.each(Loans, function (index, loan) {
         
         var element = generateLoanElement(loan);
         body.append(element);
-        
+        total += loan.amount;
     });
     
     updateLoanLabels(Loans);
@@ -33,6 +45,8 @@ $(document).on('click', '#loan-employee-container p', function () {
             <td contenteditable='true'></td>
         </tr>
     `);
+    
+    updatePersonalLabel(total);
 });
 
 $(document).on('keypress', '#loans-table tbody tr:last td:first, #loans-table tbody tr:last td:nth-child(2), #loans-table tbody tr:last td:last', function (e) {
@@ -98,6 +112,7 @@ $(document).on('keypress', '#loans-table tbody tr:last td:first, #loans-table tb
                 $('#total-loans-label').text(data.total_loans_label);
                 
                 updateLoanLabels();
+                updatePersonalLabel(data.total_personal_loans);
                 
             },
             
@@ -169,3 +184,26 @@ $(document).on('keypress', '#loans-table tbody tr:last td:first, #loans-table tb
     }
     
 });
+
+function updatePersonalLabel(total) {
+    
+    if (total > 0) {
+        var personalLabel = `اجمالى المستحقات: ${total} جم`,
+            color = 'green';
+    }
+    
+    else if (total === 0) {
+        var personalLabel = `اجمالى السلف: ${-total} جم`,
+            color = 'black';
+    }
+    
+    else {
+        var personalLabel = `اجمالى السلف: ${-total} جم`,
+            color = 'red';
+    }
+    
+    $('#total-personal-loans-label')
+        .css('color', color)
+        .text(personalLabel);
+    
+}

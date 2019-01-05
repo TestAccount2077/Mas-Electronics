@@ -138,6 +138,12 @@ class DailyExpense(TimeStampedModel):
         
         return 0
     
+    def get_next(self):
+        return DailyExpense.objects.filter(date__gt=self.date).first()
+    
+    def get_prev(self):
+        return DailyExpense.objects.filter(date__lt=self.date).last()
+    
     
 class ExpenseCategory(TimeStampedModel):
     
