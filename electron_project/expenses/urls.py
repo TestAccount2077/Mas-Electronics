@@ -15,6 +15,7 @@ urlpatterns = [
     
     # Ajax URLs
     url(r'ajax/create-expense/$', create_expense),
+    url(r'ajax/update-expense/$', update_expense),
     url(r'ajax/delete-expense/$', delete_expense),
     
     url(r'ajax/filter-expenses/$', filter_expenses),

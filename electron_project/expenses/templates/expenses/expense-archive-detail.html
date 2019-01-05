@@ -20,7 +20,7 @@
 {% block rows %}
 
     {% for expense in daily_expense.expenses %}
-    <tr data-pk="{{ expense.pk }}">
+    <tr data-pk="{{ expense.id }}">
         
         <td></td>
         <td>{{ forloop.counter }}</td>
@@ -34,7 +34,7 @@
         {% endif %}
         
         <td data-field-name="description" data-input-type="text">{{ expense.description }}</td>
-        <td class="editable-locked" data-field-name="category" data-input-type="text">{{ expense.category }}</td>
+        <td contenteditable="true" data-field-name="category" data-input-type="text">{{ expense.category }}</td>
         <td dir="ltr">{{ expense.created }}</td>
         <td data-field-name="total_after_change" data-input-type="number">{{ expense.total_after_change }}</td>
         
@@ -64,10 +64,16 @@
         </tbody>
 
     </table>
+
+    <div class="category-menu dismiss"></div>
 {% endblock %}
 
 {% block js %}
     <script type="text/javascript">
+        
+        var dayId = {{ daily_expense.id }},
+            revenueCategories = {{ revenue_categories|safe }},
+            expenseCategories = {{ expense_categories|safe }};
         
         $('title').text($('title').text() + "{{ daily_expense.date }}");
         
@@ -79,4 +85,5 @@
             expenseDetailDate = "{{ daily_expense.date }}";
         
     </script>
+    <script type="text/javascript" src="{% static 'expenses/js/expense-archive-detail.js' %}"></script>
 {% endblock %}

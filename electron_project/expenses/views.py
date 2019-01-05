@@ -40,6 +40,8 @@ def expense_archive_detail(request, pk):
     expense = DailyExpense.objects.get(pk=pk)
     
     data['daily_expense'] = expense.as_dict(include_closing_data=True, include_expenses=True)
+    data['revenue_categories'] = [category.as_dict() for category in ExpenseCategory.objects.filter(category_type='RV')]
+    data['expense_categories'] = [category.as_dict() for category in ExpenseCategory.objects.filter(category_type='EX')]
     
     data.update(
         next_id=getattr(expense.get_next(), 'id', expense.id),
@@ -71,6 +73,27 @@ def create_expense(request):
             context['daily_expense'] = daily_expense.as_dict(include_closing_data=True)
         
         return JsonResponse(context)
+
+@csrf_exempt
+def update_expense(request):
+    
+    if request.is_ajax():
+        
+        data = request.POST
+        
+        expense = Expense.objects.get(id=data['itemId'])
+        
+        value = data['value']
+        
+        if value:
+            category = ExpenseCategory.objects.get(name=data['value'])
+        else:
+            category = None
+            
+        expense.category = category
+        expense.save()
+        
+        return JsonResponse({})
     
 def delete_expense(request):
     
