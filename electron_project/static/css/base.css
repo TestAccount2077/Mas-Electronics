@@ -167,6 +167,7 @@ td.attendance-td {
     max-height: 150px;
     overflow: hidden;
     overflow-y: scroll;
+    background-color: white;
 }
 
 .category-menu p {
@@ -177,7 +178,7 @@ td.attendance-td {
 }
 
 .category-menu p:hover {
-    background-color: rgb(239, 239, 239);
+    background-color: white;/*rgb(239, 239, 239);*/
     transition: .3s all;
     padding-right: 15px;
 }
