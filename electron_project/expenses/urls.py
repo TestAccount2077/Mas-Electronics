@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^expense-archive/(?P<pk>[0-9]+)/$', expense_archive_detail, name='expense_archive_detail'),
     
     url(r'^loans/$', loans_view, name='loans_view'),
+    url(r'^total-filter/$', total_filter_view, name='total_filter'),
     
     # Ajax URLs
     url(r'ajax/create-expense/$', create_expense),
@@ -24,4 +25,6 @@ urlpatterns = [
     url(r'^ajax/add-category/$', add_category),
     
     url(r'^ajax/create-loan/$', create_loan),
+    
+    url(r'^ajax/total-filter/$', total_filter),
 ]

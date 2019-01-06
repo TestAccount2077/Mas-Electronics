@@ -18,10 +18,14 @@ class Expense(TimeStampedModel):
     
     date = models.DateField()
     
+    def __str__(self):
+        
+        return self.description[:50]
+    
     def update_total_after_change(self, new_balance_change):
         
         self.total_after_change += -self.balance_change
-                
+        
         self.balance_change = new_balance_change
         self.total_after_change += new_balance_change
         
@@ -68,7 +72,8 @@ class Expense(TimeStampedModel):
             'balance_change': self.balance_change,
             'formatted_balance_change': self.formatted_balance_change,
             'total_after_change': self.total_after_change,
-            'created': self.created.astimezone(pendulum.timezone(settings.TIME_ZONE)).strftime('%I:%M %p')
+            'created': self.created.astimezone(pendulum.timezone(settings.TIME_ZONE)).strftime('%I:%M %p'),
+            'date': self.date.strftime('%d/%m')
         }
         
         return data

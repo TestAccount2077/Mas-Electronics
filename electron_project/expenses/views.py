@@ -12,6 +12,8 @@ from .models import *
 from accounts.models import WorkerAccount
 from abstract.utils import get_date_filters, get_abstract_data
 
+import datetime
+
 
 def daily_expenses_view(request):
     
@@ -48,8 +50,6 @@ def expense_archive_detail(request, pk):
         prev_id=getattr(expense.get_prev(), 'id', expense.id)
     )
     
-    print(data['next_id'], data['prev_id'])
-
     return render(request, 'expenses/expense-archive-detail.html', context=data)
 
 @csrf_exempt
@@ -83,10 +83,12 @@ def update_expense(request):
         
         expense = Expense.objects.get(id=data['itemId'])
         
+        type_ = 'RV' if expense.balance_change > 0 else 'EX'
+        
         value = data['value']
         
         if value:
-            category = ExpenseCategory.objects.get(name=data['value'])
+            category = ExpenseCategory.objects.get(name=data['value'], category_type=type_)
         else:
             category = None
             
@@ -309,3 +311,77 @@ def create_loan(request):
                 'total_personal_loans': total_personal_loans
             }
         )
+
+def total_filter_view(request):
+    
+    data = get_abstract_data()
+    
+    data.update(
+        
+        revenue_categories=[
+            category.name for category in ExpenseCategory.objects.filter(category_type='RV')
+        ],
+        
+        expense_categories=[
+            category.name for category in ExpenseCategory.objects.filter(category_type='EX')
+        ]
+    )
+    
+    return render(request, 'expenses/total-filter.html', context=data)
+
+@csrf_exempt
+def total_filter(request):
+    
+    if request.is_ajax():
+        
+        TYPES = {
+            'اضافة': 'RV',
+            'سحب': 'EX'
+        }
+        
+        data = request.POST
+        
+        balance = data['balance']
+        description = data['description']
+        Type = data['categoryType']
+        category = data['category']
+        From = data['from']
+        to = data['to']
+        
+        expenses = Expense.objects.filter(category__category_type=TYPES[Type])
+        
+        if balance:
+            balance = float(balance)
+            expenses = expenses.filter(balance_change=balance)
+            
+        expenses = expenses.filter(description__icontains=description)
+        
+        if category:
+            expenses = expenses.filter(category__name=category)
+        
+        if From:
+            pattern = '%d/%m/%Y'
+            From = datetime.datetime.strptime(From, pattern)
+            
+            if to:
+                to = datetime.datetime.strptime(to, pattern)
+                
+                expenses = expenses.filter(date__range=(From, to))
+                
+            else:
+                expenses = expenses.filter(date__gte=From)
+                
+        else:
+            if to:
+                to = datetime.datetime.strptime(to, pattern)
+                
+                expenses = expenses.filter(date__lte=to)
+                
+        total_sum = expenses.aggregate(SUM=Sum('balance_change'))['SUM'] or 0.0
+                
+        expenses = [expense.as_dict() for expense in expenses]
+        
+        return JsonResponse({
+            'expenses': expenses,
+            'sum': total_sum
+        })

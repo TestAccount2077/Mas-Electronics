@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الفلترة الشاملة{% endblock %}
+
+{% block body %}
+    
+    <div style="margin-left: 40%; margin-bottom: 20px">
+        <button class="btn btn-lg btn-success" data-toggle='modal' data-target='#expense-total-filter-modal'>فلترة</button>
+    </div>
+    
+    <table id="total-filter-table" class="table table-bordered" dir="rtl">
+        <thead style="text-align:center">
+            <tr>
+                <th></th>
+                <th>م</th>
+                <th>التاريخ</th>
+                <th>البيان</th>
+                <th>المبلغ</th>
+                <th>النوع</th>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+    <table id="total-filter-sum-table" class="table table-bordered">
+        <thead style="text-align:center">
+            <tr>
+                <th>الاجمالى</th>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+    <div id='expense-total-filter-modal' class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title people-modal-title">الفلترة الشاملة</h5>
+                </div>
+                <div class="modal-body" id="filter-body">
+                    <input style="margin-bottom:20px" type="number" class="form-control" id="total-filter-balance" placeholder="المبلغ">
+                    <input style="margin-bottom:20px" type="text" class="form-control" id="total-filter-description" placeholder="البيان">
+                    
+                    <select style="margin-bottom:20px" class="form-control" id="total-filter-category-type">
+                        <option value="سحب">سحب</option>
+                        <option value="اضافة">اضافة</option>
+                    </select>
+                    
+                    <select style="margin-bottom:20px" class="form-control" id="total-filter-category">
+                        <option hidden value="">النوع</option>
+                        {% for category in expense_categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                    <input style="margin-bottom:20px" type="text" class="form-control" id="e-total-filter-from" placeholder="من">
+                    <input style="margin-bottom:20px" type="text" class="form-control" id="e-total-filter-to" placeholder="الى">
+                </div>
+                <div class="modal-footer" style="background-color:#F3F6F8;border-radius:6px">
+                    <br>
+                    <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">الغاء</button>
+                    <button id='confirm-total-filter-btn' type="button" class="btn btn-success">فلترة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script type="text/javascript">
+        
+        var currentView = 'expense-total-filter',
+            revenueCategories = {{ revenue_categories|safe }},
+            expenseCategories = {{ expense_categories|safe }};
+        
+        $('#expense-total-filter-modal').modal({backdrop: 'static', keyboard: false});
+        $('#expense-total-filter-modal').modal('show');
+        $('#expense-total-filter-btn').show();
+        
+        $(document).ready(function () {
+
+            $('#e-total-filter-from, #e-total-filter-to').datetimepicker({
+                format: 'DD/MM/YYYY'
+            });
+
+        });
+
+    </script>
+
+    <script src="{% static 'expenses/js/total-filter.js' %}"></script>
+
+{% endblock %}
