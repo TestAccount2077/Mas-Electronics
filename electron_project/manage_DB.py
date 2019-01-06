@@ -13,8 +13,6 @@ import webbrowser as b
 
 from subprocess import call
 
-from table import ConsoleTable as Table
-
 
 class ExpenseHandler(object):
     
