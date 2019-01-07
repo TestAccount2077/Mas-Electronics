@@ -378,7 +378,9 @@ def total_filter(request):
                 expenses = expenses.filter(date__lte=to)
                 
         total_sum = expenses.aggregate(SUM=Sum('balance_change'))['SUM'] or 0.0
-                
+        
+        expenses = expenses.order_by('date', 'category__name')
+        
         expenses = [expense.as_dict() for expense in expenses]
         
         return JsonResponse({
