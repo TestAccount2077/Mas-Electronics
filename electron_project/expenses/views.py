@@ -12,6 +12,7 @@ from .models import *
 from accounts.models import WorkerAccount
 from abstract.utils import get_date_filters, get_abstract_data
 
+import json
 import datetime
 
 
@@ -378,12 +379,33 @@ def total_filter(request):
                 expenses = expenses.filter(date__lte=to)
                 
         total_sum = expenses.aggregate(SUM=Sum('balance_change'))['SUM'] or 0.0
-        
-        expenses = expenses.order_by('date', 'category__name')
-        
+                
         expenses = [expense.as_dict() for expense in expenses]
         
         return JsonResponse({
             'expenses': expenses,
             'sum': total_sum
+        })
+
+@csrf_exempt
+def sort_expenses(request):
+    
+    if request.is_ajax():
+        
+        data = request.POST
+        
+        expenses = json.loads(data['expenses'])
+        criteria = data['criteria']
+        expenses = Expense.objects.filter(id__in=expenses)
+        
+        if 'category' in criteria:
+            
+            criteria += '__name'
+            
+            expenses = expenses.order_by(criteria)
+            
+        expenses = [expense.as_dict() for expense in expenses]
+        
+        return JsonResponse({
+            'expenses': expenses
         })

@@ -1,3 +1,5 @@
+var expenses;
+
 $(document).on('click', '#confirm-total-filter-btn', function () {
     
     var balance = $('#total-filter-balance').val(),
@@ -29,7 +31,11 @@ $(document).on('click', '#confirm-total-filter-btn', function () {
             
             body.empty();
             
+            expenses = [];
+            
             $.each(data.expenses, function (index, expense) {
+                
+                expenses.push(expense.id);
                 
                 var element = `
                     <tr>
@@ -91,3 +97,57 @@ function updateSelect(items) {
     });
     
 }
+
+$(document).on('click', '#total-filter-table thead th:last', function () {
+    
+    var carat = $(this).children(':first'),
+        caratUp = $(this).children(':last');
+    
+    if (carat.is(':visible')) {
+        var criteria = '-category';
+    } else {
+        var criteria = 'category';
+    }
+    
+    $.ajax({
+        url: '../ajax/sort-expenses/',
+        
+        type: 'POST',
+        
+        data: {
+            expenses: JSON.stringify(expenses),
+            criteria
+        },
+        
+        success: function (data) {
+            
+            if (carat.is(':hidden') && caratUp.is(':hidden')) {
+                carat.toggle();
+            
+            } else {
+                carat.toggle();
+                caratUp.toggle();
+            }
+            
+            var body = $('#total-filter-table tbody');
+            
+            body.empty();
+            
+            $.each(data.expenses, function (index, expense) {
+                
+                var element = `
+                    <tr>
+                        <td></td>
+                        <td>${ index + 1 }</td>
+                        <td>${ expense.date }</td>
+                        <td>${ expense.description }</td>
+                        <td>${ expense.balance_change }</td>
+                        <td>${ expense.category }</td>
+                    </tr>`;
+                
+                body.append(element);
+                
+            });
+        }
+    })
+});
