@@ -685,6 +685,8 @@ $(document).on('click', '#confirm-filter-btn', function (e) {
                 
                 $.each(data.devices, function (index, device) {
                     
+                    devicesAndSpareparts[device.pk] = device.spareparts;
+                    
                     if ($('#maintenance-table tbody tr[data-serial="' + device.serial_number + '"]').length) {
                         $('#maintenance-table tbody tr[data-serial="' + device.serial_number + '"]').show()
                     }
@@ -700,10 +702,10 @@ $(document).on('click', '#confirm-filter-btn', function (e) {
                                 <td>${ device.entrance_date }</td>
                                 <td>${ device.assignee }</td>
                                 <td>${ device.flaws }</td>
-                                <td><a href="#">تعديل</a></td>
+                                <td><a href="#" class='sparepart-edit'>تعديل</a></td>
                                 <td></td>
-                                <td><a href="../${ device.pk }">ذهاب</a></td>
-                                <td><img src="/static/images/remove.png' %}" class="icon remove-maintenance-item" data-pk="${ device.pk }"></td>
+                                <td><a href="../${ device.serial_number }">ذهاب</a></td>
+                                <td><img src="/static/images/remove.png" class="icon remove-maintenance-item" data-pk="${ device.pk }"></td>
                             </tr>`;
                         
                         $('#maintenance-table tbody').append(element);
@@ -717,9 +719,7 @@ $(document).on('click', '#confirm-filter-btn', function (e) {
                 
             },
             
-            error: function (error) {
-                
-            }
+            error: generateAlerts
         });
     }
     

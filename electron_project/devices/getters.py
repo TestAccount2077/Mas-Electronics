@@ -71,7 +71,18 @@ class MaintenanceGetter(DeviceInventoryGetter):
     
     @property
     def spareparts(self):
-        return list(set([device.sparepart.name for device in MaintenanceDevice.objects.filter(deleted=False) if device.sparepart]))
+        
+        all_spareparts = []
+        
+        for device in MaintenanceDevice.objects.filter(deleted=False):
+            
+            spareparts = [
+                relation.sparepart.name for relation in device.spareparts.all()
+            ]
+            
+            all_spareparts.extend(spareparts)
+        
+        return all_spareparts
     
     @property
     def notes(self):

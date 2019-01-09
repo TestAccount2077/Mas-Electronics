@@ -108,7 +108,7 @@ $(document).on('focusout', '#maintenance-serial-input', function (e) {
 
             generateAlerts(error);
 
-            cell.html('');
+            cell.empty();
         }
     });
 });
