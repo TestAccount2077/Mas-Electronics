@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django.conf import settings
+from django.db.models import Sum
 
 import datetime
 import pendulum
@@ -101,3 +102,48 @@ def create_expense(balance_change, description, category):
     expense_obj.save()
     
     return expense_obj
+
+def get_totals(year, category_type):
+    
+    categories = [category for category in ExpenseCategory.objects.filter(category_type=category_type)]
+    
+    category_rows = []
+    month_totals = {}
+    
+    for category in categories:
+        
+        data = {
+            'name': category.name,
+            'totals':  []
+        }
+        
+        total = 0
+        
+        for month in range(1, 13):
+            
+            expenses = Expense.objects.filter(category=category, date__month=month, date__year=year)
+            SUM = expenses.aggregate(SUM=Sum('balance_change'))['SUM'] or 0
+            
+            data[month] = SUM
+            total += SUM
+            data['totals'].append(SUM or '')
+            
+            if month_totals.get(month):
+                month_totals[month] += SUM
+                
+            else:
+                month_totals[month] = SUM
+            
+        data['total'] = total
+        
+        category_rows.append(data)
+        
+    absolute_total = sum(month_totals.values())
+    
+    return dict(
+        absolute_total=absolute_total,
+        category_rows=category_rows,
+        month_totals=month_totals,
+        year=year,
+        prev_year=year - 1
+    )

@@ -1,5 +1,13 @@
 var expenses;
 
+$(document).ready(function () {
+    
+    $('#expenses-submenu')
+        .show()
+        .children().children(':nth-child(4)').addClass('active');
+    
+});
+
 $(document).on('click', '#confirm-total-filter-btn', function () {
     
     var balance = $('#total-filter-balance').val(),

@@ -409,3 +409,26 @@ def sort_expenses(request):
         return JsonResponse({
             'expenses': expenses
         })
+
+def totals_view(request):
+    
+    data = get_abstract_data()
+    
+    year = datetime.datetime.now().year
+    
+    totals_data = utils.get_totals(year, 'EX')
+    
+    data.update(
+        months=range(1, 13),
+        **totals_data
+    )
+    
+    return render(request, 'expenses/totals.html', context=data)
+
+def get_totals_year(request):
+    
+    if request.is_ajax():
+        
+        totals_data = utils.get_totals(int(request.GET['year']), request.GET['categoryType'])
+        
+        return JsonResponse(totals_data)

@@ -13,6 +13,7 @@ urlpatterns = [
     
     url(r'^loans/$', loans_view, name='loans_view'),
     url(r'^total-filter/$', total_filter_view, name='total_filter'),
+    url(r'^totals/$', totals_view, name='totals'),
     
     # Ajax URLs
     url(r'ajax/create-expense/$', create_expense),
@@ -28,4 +29,6 @@ urlpatterns = [
     url(r'^ajax/create-loan/$', create_loan),
     
     url(r'^ajax/total-filter/$', total_filter),
+    
+    url(r'^ajax/get-totals-year/$', get_totals_year)
 ]

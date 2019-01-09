@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الاجماليات{% endblock %}
+
+{% block body %}
+
+<div style="margin-left: 42%; margin-bottom: 30px">
+    
+    <span style="position: relative; top: 5px; left: 5px">اضافة</span>
+    <!-- Rounded switch -->
+    <label class="switch">
+      <input type="checkbox" id="category-type">
+      <span class="slider round"></span>
+    </label>
+    <span style="position: relative; top: 5px; right: 5px">سحب</span>
+    
+</div>
+
+<div style="margin-left: 40%; margin-bottom: 30px">
+    <button class="btn btn-lg btn-success arrow-btn" data-dir='left'>&lArr;</button>
+    <img src="{% static 'images/wolf.png' %}" style="width:50px; height:45px">
+    <button class="btn btn-lg btn-success arrow-btn" data-dir='right'>&rArr;</button>
+    <h3 style="margin-left: 50px" id="year-header">{{ year }}</h3>
+</div>
+
+
+<table id="expense-totals-table" class="table table-bordered" dir="rtl">
+    
+    <thead style="text-align:center">
+        <tr>
+            <th></th>
+            {% for month in months %}
+            <th>{{ month }}</th>
+            {% endfor %}
+            <th>الاجمالى</th>
+            
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for category in category_rows %}
+        <tr>
+            <td>{{ category.name }}</td>
+            
+            {% for total in category.totals %}
+            <td>{{ total }}</td>
+            {% endfor %}
+            
+            <td>{{ category.total }}</td>
+        </tr>
+        {% endfor %}
+        
+        <tr>
+            <td>الاجمالى</td>
+            
+            {% for month, total in month_totals.items %}
+            <td>{{ total }}</td>
+            {% endfor %}
+            
+            <td><b>{{ absolute_total }}</b></td>
+            
+        </tr>
+        
+    </tbody>
+    
+</table>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'expenses/js/totals.js' %}"></script>
+
+    <script type="text/javascript">
+        var Year = {{ year }};
+    </script>
+{% endblock %}

@@ -8,7 +8,7 @@ $(document).ready(function () {
     
     $('#expenses-submenu')
         .show()
-        .children().children(':last').addClass('active');
+        .children().children(':nth-child(3)').addClass('active');
     
 });
 
