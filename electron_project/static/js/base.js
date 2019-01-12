@@ -515,6 +515,15 @@ $(document).on('click', '.sortable', function (e) {
 
 $(document).on('click', '#print', function (e) {
     
+    if (currentView === 'expense-totals') {
+        
+        $('#expense-totals-table').print({
+            orientation: 'landscape'
+        });
+        
+        return;
+    }
+    
     var viewData = viewsAndFilterModals[currentView],
         table = $(viewData.table),
         body = table.children('tbody'),
@@ -1756,7 +1765,7 @@ $(document).on('click', '#confirm-add-worker-btn', function () {
             
             $('#loan-employee-container').children(':last').before(element);
             
-            var element = `<option value="${ Username }>${ Username }"></option>`;
+            var element = `<option value="${ Username }">${ Username }></option>`;
             
             $('#change-pass-username').append(element);
             
@@ -1766,4 +1775,50 @@ $(document).on('click', '#confirm-add-worker-btn', function () {
         error: generateAlerts
     });
     
+});
+
+$(document).on('click', '#logo', function () {
+    
+    const screenWidth = window.innerWidth;
+    var sidebarState = $('#sidebar').attr('data-state');
+    
+    if (sidebarState === 'collapsed') {
+        
+        var sidebarWidth = 0.3 * screenWidth;
+        
+        $('#sidebar')
+            .attr('data-state', 'expanded')
+            .animate({width: sidebarWidth}, 650);
+        
+        $('#main-content').animate({width: screenWidth - sidebarWidth}, 650);
+        
+        $('#logo').animate({
+            margin: '35px auto',
+            width: 0.65 * sidebarWidth
+        }, 650);
+        
+        $('.list-group-item a').fadeIn(650);
+        
+    }
+    
+    else {
+        
+        var width = window.innerWidth - 50;
+        
+        $('#sidebar')
+            .attr('data-state', 'collapsed')
+            .animate({width: '50px'}, 650);
+        
+        $('#main-content').animate({width}, 650);
+        
+        $('#logo').animate({
+            marginTop: '75px',
+            width: '100%',
+            height: '100%',
+            marginBottom: '25px'
+        }, 650);
+        
+        $('.list-group-item a').fadeOut(650);
+        
+    }
 });
