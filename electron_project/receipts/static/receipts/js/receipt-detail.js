@@ -455,3 +455,21 @@ $("#serial-edit-modal").on('hidden.bs.modal', function () {
     refreshReceiptEditModal();
     
 });
+
+$(document).on('click', '.arrow-btn', function () {
+    
+    var dir = $(this).data('dir');
+    
+    $.ajax({
+        url: '../../ajax/go-to-receipt/',
+        data: {
+            id: receipt.id,
+            dir,
+            type: receipt.literal_type
+        },
+        
+        success: function (data) {
+            location.href = `../${ data.id }/`;
+        }
+    });
+});

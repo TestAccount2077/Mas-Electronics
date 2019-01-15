@@ -57,7 +57,9 @@ def reception_receipt_archive_view(request):
     
     data = get_abstract_data()
     
-    data['reception_receipts'] = ReceptionReceipt.objects.all()
+    receipts = data['reception_receipts'] = ReceptionReceipt.objects.all()
+    
+    request.session['receipts'] = [receipt.id for receipt in receipts]
     
     return render(request, 'receipts/reception-receipt-archive.html', context=data)
 
@@ -65,7 +67,9 @@ def delivery_receipt_archive_view(request):
     
     data = get_abstract_data()
     
-    data['delivery_receipts'] = DeliveryReceipt.objects.all()
+    receipts = data['delivery_receipts'] = DeliveryReceipt.objects.all()
+    
+    request.session['receipts'] = [receipt.id for receipt in receipts]
     
     return render(request, 'receipts/delivery-receipt-archive.html', context=data)
 
@@ -534,8 +538,42 @@ def filter_receipt_archive(request):
         filtered_receipts = [frozenset(qs) for qs in filtered_receipts]
 
         filtered_receipts = all_receipts.intersection(*filtered_receipts)
+        receipts = request.session['receipts'] = [receipt.id for receipt in filtered_receipts]
+        receipts.sort()
         filtered_receipts = [receipt.as_dict() for receipt in filtered_receipts]
-                
+        
         return JsonResponse({
             'receipts': filtered_receipts
+        })
+    
+def go_to_receipt(request):
+    
+    if request.is_ajax():
+        
+        data = request.GET
+        
+        Type = data['type']
+        receipt_ids = request.session['receipts']
+        
+        index = receipt_ids.index(int(data['id']))
+        
+        next_index = index + 1 if data['dir'] == 'right' else index - 1
+        
+        if next_index >= len(receipt_ids):
+            next_id = receipt_ids[-1]
+            
+        elif next_index < 0:
+            next_id = receipt_ids[0]
+
+        else:
+            next_id = receipt_ids[next_index]
+        
+        if Type == 'reception':
+            receipt = ReceptionReceipt.objects.get(id=next_id)
+        
+        else:
+            receipt = DeliveryReceipt.objects.get(id=next_id)
+        
+        return JsonResponse({
+            'id': receipt.id
         })

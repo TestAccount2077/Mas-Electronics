@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'ajax/edit-serial/$', edit_serial),
     
     url(r'ajax/filter-receipt-archive/$', filter_receipt_archive),
+    
+    url(r'ajax/go-to-receipt/$', go_to_receipt),
 ]

@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{% block Title %}{% endblock %}{% endblock %}
 
 
 {% block body %}
+
+<div style="margin-left: 43%; margin-bottom: 30px">
+    <button class="btn btn-lg btn-success arrow-btn" data-dir='left'>&lArr;</button>
+    <img src="{% static 'images/wolf.png' %}" style="width:50px; height:45px">
+    <button class="btn btn-lg btn-success arrow-btn" data-dir='right'>&rArr;</button>
+</div>
+
 <div class="receipt-view-header">
     
     <div class="row">
