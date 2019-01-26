@@ -4,7 +4,7 @@ $(document).ready(function () {
     
     $('#expenses-submenu')
         .show()
-        .children().children(':nth-child(4)').addClass('active');
+        .children().children(':nth-child(5)').addClass('active');
     
 });
 

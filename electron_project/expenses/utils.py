@@ -65,16 +65,16 @@ def close_account():
     
     return daily_expense
 
-def get_formatted_loans():
+def get_formatted_loans_or_custodies(Class):
     
-    loans = {}
+    objects = {}
         
     for account in WorkerAccount.objects.all():
-        user_loans = [loan.as_dict() for loan in Loan.objects.filter(name=account.username)]
+        user_objects = [Object.as_dict() for Object in Class.objects.filter(name=account.username)]
         
-        loans[account.username] = user_loans
+        objects[account.username] = user_objects
         
-    return loans
+    return objects
 
 def create_expense(balance_change, description, category):
     

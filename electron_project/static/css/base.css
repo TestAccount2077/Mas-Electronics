@@ -208,7 +208,7 @@ td.attendance-td {
     width: 25%
 }
 
-#loan-employee-container {
+#loan-employee-container, #cust-employee-container {
     width: 23%;
     margin-left: 14%;
     border: 1px solid #eee;
@@ -216,14 +216,14 @@ td.attendance-td {
     height: fit-content;
 }
 
-#loan-employee-container p {
+#loan-employee-container p, #cust-employee-container p {
     padding: 15px;
     margin: 0;
     border-bottom: 1px solid #eee;
     cursor: pointer
 }
 
-#loan-employee-container p.active {
+#loan-employee-container p.active, #cust-employee-container p.active {
     padding: 15px;
     margin: 0;
     border-bottom: 1px solid #eee;
@@ -231,7 +231,7 @@ td.attendance-td {
     background-color: gainsboro
 }
 
-#loan-employee-container p:hover {
+#loan-employee-container p:hover, #cust-employee-container p:hover {
     border-right: 5px solid #0d904f;
     background-color: gainsboro;
     transition: 0.2s all ease-in-out;
@@ -298,4 +298,32 @@ input:checked + .slider:before {
 
 #logo {
     cursor: pointer
+}
+
+#filter-types {
+    margin-bottom: 20px;
+    margin-left: 0px;
+    display: none;
+}
+
+.filter-type-el {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.filter-type-el p {
+    display: inline-block;
+    margin: 0;
+}
+
+.remove-filter-type-el {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+    color: white
 }

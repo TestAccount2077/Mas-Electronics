@@ -245,7 +245,7 @@ def loans_view(request):
     
     data = get_abstract_data()
     
-    loans = utils.get_formatted_loans()
+    loans = utils.get_formatted_loans_or_custodies(Loan)
     
     total_loans = sum([loan.amount for loan in Loan.objects.all()])
     
@@ -432,3 +432,73 @@ def get_totals_year(request):
         totals_data = utils.get_totals(int(request.GET['year']), request.GET['categoryType'])
         
         return JsonResponse(totals_data)
+
+def custody_view(request):
+        
+    data = get_abstract_data()
+    
+    custs = utils.get_formatted_loans_or_custodies(Custody)
+    
+    total_custody = sum([cust.amount for cust in Custody.objects.all()])
+    
+    if total_custody > 0:
+        label = 'اجمالى المستحقات: {} جم'.format(total_custody)
+        
+    else:
+        label = 'اجمالى العهدة: {} جم'.format(total_custody)
+    
+    data.update(
+        custs=custs,
+        total_custs_label=label
+    )
+    
+    return render(request, 'expenses/custody.html', context=data)
+
+@csrf_exempt
+def create_custody(request):
+    
+    if request.is_ajax():
+        
+        data = request.POST
+        
+        amount = float(data['amount'])
+        name = data['name']
+        
+        if amount > 0:
+            type_ = 'سداد عهدة'
+        
+        else:
+            type_ = 'عهدة'
+        
+        expense = utils.create_expense(amount, '{} {}'.format(type_, name), category='عهدة')
+                
+        cust = Custody.objects.create(
+            name=name,
+            amount=amount,
+            notes=data['notes'],
+            expense=expense
+        )
+        
+        total_custs = Custody.objects.aggregate(total=Sum('amount'))['total']
+        
+        total_personal_custs = Custody.objects.filter(
+            name=name
+        
+        ).aggregate(
+            total=Sum('amount')
+        )['total']
+        
+        if total_custs > 0:
+            label = 'اجمالى المستحقات: {} جم'.format(total_custs)
+
+        else:
+            label = 'اجمالى العهدة: {} جم'.format(total_custs)
+        
+        return JsonResponse(
+            {
+                'cust': cust.as_dict(include_sum=True),
+                'current_balance': App.objects.first().current_balance,
+                'total_custs_label': label,
+                'total_personal_custs': total_personal_custs
+            }
+        )

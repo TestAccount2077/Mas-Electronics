@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}العهدة{% endblock %}
+
+{% block body %}
+
+<div style="width: 60%; margin-bottom: 50px">
+    <h3 style="text-align: center" id="total-custs-label">{{ total_custs_label }}</h3>
+    <h3 style="text-align: center" id="total-personal-custs-label"></h3>
+</div>
+<div id="custs-container" style="display: flex">
+    <table id="custs-table" class="table table-bordered" dir="rtl" style="width: 60%">
+        <thead>
+            <tr>
+                <th>سحب</th>
+                <th>اضافة</th>
+                <th>التاريخ</th>
+                <th>ملاحظات</th>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+                <td>اجمالى المسحوبات</td>
+                <td>اجمالى الاضافات</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr style="display:none">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <div dir="rtl" id="cust-employee-container">
+    {% for name, user_custs in custs.items %}
+        <p>{{ name }}</p>
+    {% endfor %}
+        <p style="background-color: #47d739; color: white" data-toggle='modal' data-target='#add-worker-modal'>اضافة</p>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+
+<script type="text/javascript">
+
+    var custs = {{ custs|safe }};
+    
+</script>
+
+<script type="text/javascript" src="{% static 'expenses/js/custody.js' %}"></script>
+
+{% endblock %}

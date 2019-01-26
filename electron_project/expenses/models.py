@@ -6,7 +6,7 @@ from django.conf import settings
 import pendulum
 
 
-from abstract.models import TimeStampedModel, App
+from abstract.models import TimeStampedModel, App, BaseLoanOrCustody
 
 
 class Expense(TimeStampedModel):
@@ -174,30 +174,11 @@ class ExpenseCategory(TimeStampedModel):
         }
     
     
-class Loan(TimeStampedModel):
-    
-    name = models.CharField(max_length=100)
-    amount = models.FloatField()
-    notes = models.TextField(default='')
+class Loan(BaseLoanOrCustody):
     
     expense = models.OneToOneField('expenses.Expense', null=True, blank=True, related_name='loan')
     
-    def as_dict(self, **kwargs):
-        
-        data = {
-            'id': self.id,
-            'name': self.name,
-            'amount': self.amount,
-            'notes': self.notes,
-            'created': self.formatted_created
-        }
-        
-        if kwargs.get('include_sum', False):
-            data['loan_sum'] = sum([-loan.amount for loan in Loan.objects.filter(name=self.name)])
-        
-        return data
     
-    @property
-    def formatted_created(self):
-        
-        return self.created.astimezone(pendulum.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %I:%M %p')
+class Custody(BaseLoanOrCustody):
+    
+    expense = models.OneToOneField('expenses.Expense', null=True, blank=True, related_name='custody')

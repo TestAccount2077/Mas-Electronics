@@ -1,5 +1,10 @@
 from django.db import models
+from django.conf import settings
+
 import importlib as imp
+
+import pendulum
+
 
 class TimeStampedModel(models.Model):
     
@@ -144,3 +149,34 @@ class BaseReceipt(TimeStampedModel):
     def type_(self):
         
         return 'reception' if isinstance(self, imp.import_module('receipts.models').ReceptionReceipt) else 'delivery'
+    
+    
+class BaseLoanOrCustody(TimeStampedModel):
+    
+    name = models.CharField(max_length=100)
+    amount = models.FloatField()
+    notes = models.TextField(default='')
+    
+    class Meta(TimeStampedModel.Meta):
+        
+        abstract = True
+        
+    def as_dict(self, **kwargs):
+        
+        data = {
+            'id': self.id,
+            'name': self.name,
+            'amount': self.amount,
+            'notes': self.notes,
+            'created': self.formatted_created
+        }
+        
+        if kwargs.get('include_sum', False):
+            data['loan_sum'] = sum([-loan.amount for loan in self.__class__.objects.filter(name=self.name)])
+        
+        return data
+    
+    @property
+    def formatted_created(self):
+        
+        return self.created.astimezone(pendulum.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %I:%M %p')
