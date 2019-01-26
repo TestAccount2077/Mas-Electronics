@@ -9,10 +9,13 @@ $(document).ready(function () {
     
 });
 
-$(document).on('click', '#sparepart-save-btn', function (e) {
+//$(document).on('click', '#sparepart-save-btn', function (e) {
+$(document).on('keypress', '#sparepart-inventory-table tbody tr:last td:nth-child(6)',  function (e) {
+    
+    if (e.which === 13) {
     
     var btn = $(this),
-        row = btn.parent().parent(),
+        row = btn.parent(),
         name = row.children(':nth-child(3)').text(),
         count = row.children(':nth-child(4)').text(),
         minimum = row.children(':nth-child(5)').text(),
@@ -110,6 +113,7 @@ $(document).on('click', '#sparepart-save-btn', function (e) {
         
         error: generateAlerts
     });
+    }
 });
 
 $(document).on('click', '.remove-sparepart', function (e) {
